@@ -17,9 +17,19 @@ Production site: https://benroberts.io
 npm run dev
 ```
 
-1. Add `src/content/blog/<slug>/index.md` and images in that same folder.
-2. `git add src/content/blog/<slug> && git commit && git push`
-3. GitHub Actions builds and deploys to Azure Static Web Apps.
+1. Create a content branch:
+   ```bash
+   git checkout -b post/<slug>
+   ```
+2. Add `src/content/blog/<slug>/index.md` and any images in that same folder.
+3. Commit and push the branch:
+   ```bash
+   git add src/content/blog/<slug>
+   git commit -m "Add post: <title>"
+   git push -u origin post/<slug>
+   ```
+4. Open a Pull Request into `main`. The `Validate Site Build` check will test the Astro build and search indexing.
+5. Merge the PR. GitHub Actions deploys automatically to Azure Static Web Apps (`Deploy to Production`).
 
 No separate image host. No second repo. Bicep under `infra/` is only for Azure resource changes.
 
