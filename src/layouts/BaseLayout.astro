@@ -1,0 +1,73 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import GeometricField from '../components/GeometricField.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import '../styles/global.css';
+import '../styles/geo.css';
+import '../styles/nav.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  current?: string;
+  density?: 'default' | 'article';
+  geo?: 'full' | 'muted' | 'quiet';
+  showProgress?: boolean;
+}
+
+const {
+  title,
+  description = 'Azure, identity security, and automation notes by Ben Roberts.',
+  current = '',
+  density = 'default',
+  geo = 'full',
+  showProgress = false,
+} = Astro.props;
+
+const pageTitle = title === 'Ben Roberts' ? 'Ben Roberts — Azure & Identity' : `${title} · benroberts.io`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#07080c" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title="benroberts.io" href="/rss.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <title>{pageTitle}</title>
+    <ClientRouter />
+  </head>
+  <body>
+    <GeometricField intensity={geo} />
+    <div class="site-shell">
+      <SiteHeader current={current} showProgress={showProgress} />
+      <main class="site-main" data-density={density} data-pagefind-body>
+        <div class="page-enter">
+          <slot />
+        </div>
+      </main>
+      <footer class="site-footer">
+        <div class="site-footer-inner">
+          <span>© {new Date().getFullYear()} Ben Roberts</span>
+          <span>
+            <a href="/rss.xml">RSS</a>
+            ·
+            <a href="/archive">Archive</a>
+            ·
+            <a href="https://github.com/broberts23" rel="noopener noreferrer">GitHub</a>
+          </span>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

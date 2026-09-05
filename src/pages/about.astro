@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { loadCertifications } from '../utils/certs';
+import { formatDate } from '../utils/posts';
+
+const certs = loadCertifications();
+---
+
+<BaseLayout
+  title="About"
+  description="About Ben Roberts — Azure identity engineer and certifications."
+  current="about"
+  geo="full"
+>
+  <p class="eyebrow">About</p>
+  <h1 class="page-title">Ben Roberts</h1>
+  <p class="lede">
+    I write about Azure identity, Entra, PowerShell, and the infrastructure patterns that keep labs
+    disposable and production systems honest. This site replaces the Hashnode blog with a static
+    home that treats PowerShell as a first-class language.
+  </p>
+
+  <section class="section reveal">
+    <div class="section-head">
+      <h2>Certifications</h2>
+    </div>
+    <p class="lede" style="margin-bottom: 1.25rem;">
+      Replace the placeholder entries in <code>src/data/certifications.yaml</code> with your live
+      credentials (name, dates, Credly / Microsoft Learn links).
+    </p>
+    <div class="cert-grid">
+      {
+        certs.map((cert) => {
+          const Tag = cert.credentialUrl ? 'a' : 'div';
+          const attrs = cert.credentialUrl
+            ? { href: cert.credentialUrl, rel: 'noopener noreferrer', target: '_blank' }
+            : {};
+          return (
+            <Tag class="cert-card" {...attrs}>
+              <span class={`cert-status ${cert.status === 'active' ? '' : 'inactive'}`}>
+                {cert.status}
+              </span>
+              <strong>{cert.name}</strong>
+              <span class="issuer">{cert.issuer}</span>
+              <span class="meta">
+                Earned {formatDate(new Date(cert.earned))}
+                {cert.expires ? ` · Expires ${formatDate(new Date(cert.expires))}` : ''}
+              </span>
+            </Tag>
+          );
+        })
+      }
+    </div>
+  </section>
+</BaseLayout>

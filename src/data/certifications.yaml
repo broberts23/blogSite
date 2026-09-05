@@ -1,0 +1,16 @@
+# Replace placeholders with your real certifications before go-live.
+# status: active | inactive
+# credentialUrl: Credly / Microsoft Learn verify link (optional)
+
+- name: Microsoft Certified — Example Expert
+  issuer: Microsoft
+  earned: "2024-06-01"
+  expires: "2027-06-01"
+  status: active
+  credentialUrl: ""
+- name: Microsoft Certified — Example Associate
+  issuer: Microsoft
+  earned: "2023-03-15"
+  expires: null
+  status: active
+  credentialUrl: ""

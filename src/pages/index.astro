@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedPosts, formatDate, postSlug } from '../utils/posts';
+import { loadCertifications } from '../utils/certs';
+
+const posts = (await getPublishedPosts()).slice(0, 4);
+const certs = loadCertifications().filter((c) => c.status === 'active').slice(0, 4);
+---
+
+<BaseLayout title="Ben Roberts" current="home" geo="full">
+  <section class="hero reveal">
+    <p class="eyebrow">Cloud · Identity · Automation</p>
+    <h1 class="hero-name">Ben Roberts</h1>
+    <p class="hero-role">
+      Azure identity security, Entra, PowerShell, and infrastructure automation — written for people who build the lab and ship the fix.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="/blog">Read the blog</a>
+      <a class="btn" href="/about">About & certifications</a>
+    </div>
+  </section>
+
+  {
+    certs.length > 0 && (
+      <section class="section reveal">
+        <div class="section-head">
+          <h2>Active certifications</h2>
+          <a href="/about">View all</a>
+        </div>
+        <div class="cert-grid cert-row">
+          {certs.map((cert) => (
+            <a class="cert-card" href={cert.credentialUrl || '/about'}>
+              <span class="cert-status">{cert.status}</span>
+              <strong>{cert.name}</strong>
+              <span class="issuer">{cert.issuer}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section reveal">
+    <div class="section-head">
+      <h2>Latest posts</h2>
+      <a href="/blog">All posts</a>
+    </div>
+    {
+      posts.length === 0 ? (
+        <p class="lede">Posts are being migrated. Check back shortly.</p>
+      ) : (
+        <div class="grid-posts cols-2">
+          {posts.map((post) => (
+            <a class="card" href={`/${postSlug(post)}`}>
+              <p class="meta">{formatDate(post.data.pubDate)}</p>
+              <h3>{post.data.title}</h3>
+              <p>{post.data.description}</p>
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>

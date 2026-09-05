@@ -1,0 +1,9 @@
+# benroberts.io
+
+> Azure identity, Entra, PowerShell, and infrastructure automation notes by Ben Roberts.
+
+## Site
+- Blog: https://benroberts.io/blog
+- About: https://benroberts.io/about
+- RSS: https://benroberts.io/rss.xml
+- Sitemap: https://benroberts.io/sitemap-index.xml

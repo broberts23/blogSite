@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedPosts, formatDate, postSlug, uniqueTags } from '../../utils/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  const tags = uniqueTags(posts);
+  return tags.map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      posts: posts.filter((p) => p.data.tags.includes(tag)),
+    },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`#${tag}`} description={`Posts tagged ${tag}`} current="blog" geo="muted">
+  <p class="eyebrow">Tag</p>
+  <h1 class="page-title">#{tag}</h1>
+  <p class="lede">{posts.length} post{posts.length === 1 ? '' : 's'}.</p>
+  <div class="grid-posts">
+    {
+      posts.map((post) => (
+        <a class="card reveal" href={`/${postSlug(post)}`}>
+          <p class="meta">{formatDate(post.data.pubDate)}</p>
+          <h2>{post.data.title}</h2>
+          <p>{post.data.description}</p>
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>

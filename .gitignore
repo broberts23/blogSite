@@ -1,0 +1,30 @@
+﻿# dependencies
+node_modules/
+
+# build
+dist/
+.astro/
+pagefind/
+infra/*.json
+
+# env
+.env
+.env.*
+!.env.example
+
+# local documentation & private operational notes
+docs/
+
+# migration scripts / scrapers
+scripts/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# logs
+npm-debug.log*
+*.log

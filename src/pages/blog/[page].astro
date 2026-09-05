@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedPosts, formatDate, postSlug, estimateReadingTime } from '../../utils/posts';
+
+export async function getStaticPaths() {
+  const all = await getPublishedPosts();
+  const pageSize = 10;
+  const totalPages = Math.max(1, Math.ceil(all.length / pageSize));
+  const paths = [];
+  for (let page = 2; page <= totalPages; page++) {
+    paths.push({
+      params: { page: String(page) },
+      props: {
+        page,
+        totalPages,
+        posts: all.slice((page - 1) * pageSize, page * pageSize),
+      },
+    });
+  }
+  return paths;
+}
+
+const { page, totalPages, posts } = Astro.props;
+---
+
+<BaseLayout title={`Blog · page ${page}`} current="blog" geo="muted">
+  <p class="eyebrow">Writing</p>
+  <h1 class="page-title">Blog</h1>
+  <p class="meta" style="margin-bottom: 1.5rem;">
+    Page {page} of {totalPages}
+  </p>
+
+  <div class="grid-posts">
+    {
+      posts.map((post) => (
+        <a class="card reveal" href={`/${postSlug(post)}`}>
+          <p class="meta">
+            {formatDate(post.data.pubDate)} · {estimateReadingTime(post.body ?? '')} min read
+          </p>
+          <h2>{post.data.title}</h2>
+          <p>{post.data.description}</p>
+        </a>
+      ))
+    }
+  </div>
+
+  <nav class="pagination" aria-label="Blog pagination">
+    <a class="btn" href={page === 2 ? '/blog' : `/blog/${page - 1}`}>Newer posts</a>
+    {
+      page < totalPages && (
+        <a class="btn" href={`/blog/${page + 1}`}>
+          Older posts
+        </a>
+      )
+    }
+  </nav>
+</BaseLayout>

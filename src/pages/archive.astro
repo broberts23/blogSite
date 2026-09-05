@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedPosts, formatDate, postSlug } from '../utils/posts';
+
+const posts = await getPublishedPosts();
+---
+
+<BaseLayout title="Archive" description="All posts by date." current="blog" geo="muted">
+  <p class="eyebrow">Index</p>
+  <h1 class="page-title">Archive</h1>
+  <p class="lede">{posts.length} posts, newest first.</p>
+  <ul class="archive-list">
+    {
+      posts.map((post) => (
+        <li class="reveal">
+          <a href={`/${postSlug(post)}`}>
+            <span class="meta">{formatDate(post.data.pubDate)}</span>
+            <span class="archive-title">{post.data.title}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

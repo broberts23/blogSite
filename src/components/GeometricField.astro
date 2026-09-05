@@ -1,0 +1,20 @@
+---
+interface Props {
+  intensity?: 'full' | 'muted' | 'quiet';
+}
+
+const { intensity = 'full' } = Astro.props;
+---
+
+<div class="geo-field" data-intensity={intensity} transition:persist="geo-field" aria-hidden="true">
+  <div class="geo-grid"></div>
+  <svg class="geo-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+    <polygon class="geo-shape fill geo-a" points="80,120 260,80 310,260 140,300"></polygon>
+    <polygon class="geo-shape geo-a" points="180,160 240,200 200,250"></polygon>
+    <polygon class="geo-shape fill geo-b" points="820,60 1080,140 980,340 760,250"></polygon>
+    <line class="geo-shape geo-b" x1="900" y1="180" x2="1040" y2="280"></line>
+    <polygon class="geo-shape fill geo-c" points="520,480 680,430 760,580 580,640 470,560"></polygon>
+    <polyline class="geo-shape geo-c" points="140,520 280,480 360,560 480,540"></polyline>
+    <polygon class="geo-shape geo-a" points="980,520 1120,560 1060,680 920,640"></polygon>
+  </svg>
+</div>

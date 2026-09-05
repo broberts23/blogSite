@@ -1,0 +1,117 @@
+.geo-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% -10%, rgba(61, 214, 245, 0.08), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 90% 0%, rgba(61, 214, 245, 0.05), transparent 50%),
+    var(--bg);
+  view-transition-name: geo-field;
+}
+
+.geo-field[data-intensity="muted"] .geo-shape {
+  opacity: 0.35;
+}
+
+.geo-field[data-intensity="quiet"] .geo-shape {
+  opacity: 0.2;
+}
+
+.geo-grid {
+  position: absolute;
+  inset: -20%;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  transform: perspective(800px) rotateX(58deg) scale(1.4);
+  transform-origin: center top;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent 75%);
+}
+
+.geo-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.geo-shape {
+  fill: none;
+  stroke: rgba(61, 214, 245, 0.35);
+  stroke-width: 1.25;
+  opacity: 0.7;
+}
+
+.geo-shape.fill {
+  fill: rgba(61, 214, 245, 0.04);
+}
+
+.geo-a {
+  animation: geo-drift-a 32s linear infinite;
+  transform-origin: 20% 30%;
+}
+
+.geo-b {
+  animation: geo-drift-b 40s linear infinite;
+  transform-origin: 75% 40%;
+}
+
+.geo-c {
+  animation: geo-drift-c 28s ease-in-out infinite;
+  transform-origin: 55% 70%;
+}
+
+@keyframes geo-drift-a {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(3%, 4%) rotate(8deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+@keyframes geo-drift-b {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(-4%, 3%) rotate(-10deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+@keyframes geo-drift-c {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(2%, -3%) scale(1.05);
+  }
+}
+
+@media (max-width: 767px) {
+  .geo-c {
+    display: none;
+  }
+
+  .geo-shape {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .geo-a,
+  .geo-b,
+  .geo-c {
+    animation: none;
+  }
+}

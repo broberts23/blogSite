@@ -1,0 +1,107 @@
+---
+interface Props {
+  current?: string;
+  showProgress?: boolean;
+}
+
+const { current = '', showProgress = false } = Astro.props;
+
+const links = [
+  { href: '/', label: 'Home', id: 'home' },
+  { href: '/blog', label: 'Blog', id: 'blog' },
+  { href: '/search', label: 'Search', id: 'search' },
+  { href: '/about', label: 'About', id: 'about' },
+];
+---
+
+<header class="site-header" transition:persist="site-nav">
+  <div class="site-header-inner">
+    <a class="brand" href="/">ben<span>roberts</span>.io</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <span class="nav-toggle-bars"></span>
+    </button>
+    <nav class="site-nav" id="site-nav">
+      <ul>
+        {
+          links.map((link) => (
+            <li>
+              <a href={link.href} aria-current={current === link.id ? 'page' : undefined}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+  {showProgress && <div class="reading-progress" id="reading-progress"></div>}
+</header>
+
+<script>
+  function setupNav() {
+    const toggle = document.querySelector<HTMLButtonElement>('.nav-toggle');
+    const nav = document.querySelector<HTMLElement>('#site-nav');
+    if (!toggle || !nav) return;
+
+    const close = () => {
+      nav.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open menu');
+    };
+
+    toggle.onclick = () => {
+      const open = !nav.classList.contains('is-open');
+      nav.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    };
+
+    nav.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+  }
+
+  function setupProgress() {
+    const bar = document.querySelector<HTMLElement>('#reading-progress');
+    if (!bar) return;
+    const onScroll = () => {
+      const el = document.documentElement;
+      const max = el.scrollHeight - el.clientHeight;
+      const pct = max > 0 ? (el.scrollTop / max) * 100 : 0;
+      bar.style.width = `${pct}%`;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  function setupReveal() {
+    const nodes = document.querySelectorAll<HTMLElement>('.reveal');
+    if (!nodes.length) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      nodes.forEach((n) => n.classList.add('is-visible'));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
+    );
+    nodes.forEach((n, i) => {
+      n.style.transitionDelay = `${Math.min(i * 0.05, 0.35)}s`;
+      io.observe(n);
+    });
+  }
+
+  const boot = () => {
+    setupNav();
+    setupProgress();
+    setupReveal();
+  };
+
+  document.addEventListener('astro:page-load', boot);
+  boot();
+</script>

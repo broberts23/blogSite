@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedPosts, formatDate, postSlug, estimateReadingTime } from '../../utils/posts';
+
+const all = await getPublishedPosts();
+const pageSize = 10;
+const totalPages = Math.max(1, Math.ceil(all.length / pageSize));
+const page = 1;
+const posts = all.slice(0, pageSize);
+---
+
+<BaseLayout
+  title="Blog"
+  description="All posts on Azure, identity security, and automation."
+  current="blog"
+  geo="muted"
+>
+  <p class="eyebrow">Writing</p>
+  <h1 class="page-title">Blog</h1>
+  <p class="lede">Practical notes on Entra, Azure, PowerShell, and the labs behind them.</p>
+
+  <div class="grid-posts">
+    {
+      posts.map((post) => (
+        <a class="card reveal" href={`/${postSlug(post)}`}>
+          <p class="meta">
+            {formatDate(post.data.pubDate)} · {estimateReadingTime(post.body ?? '')} min read
+          </p>
+          <h2>{post.data.title}</h2>
+          <p>{post.data.description}</p>
+          {post.data.tags.length > 0 && (
+            <ul class="tag-list">
+              {post.data.tags.slice(0, 4).map((tag) => (
+                <li>
+                  <span class="tag">#{tag}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </a>
+      ))
+    }
+  </div>
+
+  {
+    totalPages > 1 && (
+      <nav class="pagination" aria-label="Blog pagination">
+        <span class="meta">
+          Page {page} of {totalPages}
+        </span>
+        <a class="btn" href="/blog/2">
+          Older posts
+        </a>
+      </nav>
+    )
+  }
+</BaseLayout>

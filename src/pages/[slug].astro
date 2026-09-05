@@ -1,0 +1,53 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedPosts, formatDate, postSlug, estimateReadingTime } from '../utils/posts';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return posts.map((post) => ({
+    params: { slug: postSlug(post) },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const minutes = estimateReadingTime(post.body ?? '');
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  current="blog"
+  density="article"
+  geo="quiet"
+  showProgress={true}
+>
+  <article>
+    <header>
+      <p class="meta">
+        <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+        · {minutes} min read
+      </p>
+      <h1 class="page-title">{post.data.title}</h1>
+      <p class="lede">{post.data.description}</p>
+      {
+        post.data.tags.length > 0 && (
+          <ul class="tag-list">
+            {post.data.tags.map((tag) => (
+              <li>
+                <a class="tag" href={`/tags/${encodeURIComponent(tag)}`}>
+                  #{tag}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+    <div class="prose" style="margin-top: 2rem;">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

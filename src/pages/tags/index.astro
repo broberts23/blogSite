@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedPosts, uniqueTags } from '../../utils/posts';
+
+const tags = uniqueTags(await getPublishedPosts());
+---
+
+<BaseLayout title="Tags" current="blog" geo="muted">
+  <p class="eyebrow">Browse</p>
+  <h1 class="page-title">Tags</h1>
+  <ul class="tag-list" style="margin-top: 1.5rem;">
+    {
+      tags.map((tag) => (
+        <li>
+          <a class="tag" href={`/tags/${encodeURIComponent(tag)}`}>
+            #{tag}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>
