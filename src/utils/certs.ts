@@ -9,6 +9,7 @@ export interface Certification {
   issuer: string;
   earned: string;
   expires?: string | null;
+  expired?: string | null;
   status: 'active' | 'inactive';
   credentialUrl?: string;
 }

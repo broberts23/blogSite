@@ -3,7 +3,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { loadCertifications } from "../utils/certs";
 import { formatDate } from "../utils/posts";
 
-const certs = loadCertifications();
+const certs = loadCertifications().sort((a, b) => {
+  if (a.status === b.status) return 0;
+  return a.status === "active" ? -1 : 1;
+});
 ---
 
 <BaseLayout
@@ -46,6 +49,7 @@ const certs = loadCertifications();
                 target: "_blank",
               }
             : {};
+          const expiredDate = cert.expired || cert.expires;
           return (
             <Tag class="cert-card" {...attrs}>
               {cert.badgeUrl && (
@@ -69,10 +73,22 @@ const certs = loadCertifications();
                   {[cert.issuer, cert.code].filter(Boolean).join(" · ")}
                 </span>
                 <span class="meta">
-                  Earned {formatDate(new Date(cert.earned))}
-                  {cert.expires
-                    ? ` · Expires ${formatDate(new Date(cert.expires))}`
-                    : ""}
+                  {
+                    cert.status === "inactive" ? (
+                      expiredDate ? (
+                        `Expired ${formatDate(new Date(expiredDate))}`
+                      ) : (
+                        `Earned ${formatDate(new Date(cert.earned))}`
+                      )
+                    ) : (
+                      <>
+                        Earned {formatDate(new Date(cert.earned))}
+                        {cert.expires
+                          ? ` · Expires ${formatDate(new Date(cert.expires))}`
+                          : ""}
+                      </>
+                    )
+                  }
                 </span>
               </div>
             </Tag>
