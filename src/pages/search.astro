@@ -19,45 +19,123 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </div>
 </BaseLayout>
 
-<script is:inline>
-  async function runSearch(query) {
-    const resultsEl = document.querySelector('#search-results');
+<script>
+  interface PagefindSearchResult {
+    data: () => Promise<{
+      url: string;
+      excerpt?: string;
+      meta?: {
+        title?: string;
+      };
+    }>;
+  }
+
+  interface PagefindModule {
+    options: (opts: { excerptLength?: number }) => Promise<void>;
+    search: (query: string) => Promise<{ results: PagefindSearchResult[] }>;
+  }
+
+  function getSafeSameOriginUrl(urlStr: string): string | null {
+    try {
+      const parsed = new URL(urlStr, window.location.origin);
+      if (parsed.origin !== window.location.origin) return null;
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return null;
+      return parsed.pathname + parsed.search + parsed.hash;
+    } catch {
+      return null;
+    }
+  }
+
+  function renderExcerpt(excerpt: string, container: HTMLElement): void {
+    const template = document.createElement('template');
+    template.innerHTML = excerpt;
+
+    function appendSanitized(sourceNode: Node, targetNode: Node): void {
+      for (const child of Array.from(sourceNode.childNodes)) {
+        if (child.nodeType === Node.TEXT_NODE) {
+          targetNode.appendChild(document.createTextNode(child.textContent ?? ''));
+        } else if (child.nodeType === Node.ELEMENT_NODE) {
+          const el = child as Element;
+          if (el.tagName.toLowerCase() === 'mark') {
+            const mark = document.createElement('mark');
+            appendSanitized(el, mark);
+            targetNode.appendChild(mark);
+          } else {
+            appendSanitized(el, targetNode);
+          }
+        }
+      }
+    }
+
+    appendSanitized(template.content, container);
+  }
+
+  async function runSearch(query: string): Promise<void> {
+    const resultsEl = document.querySelector<HTMLElement>('#search-results');
     if (!resultsEl) return;
     if (!query.trim()) {
-      resultsEl.innerHTML = '';
+      resultsEl.replaceChildren();
       return;
     }
     try {
-      const pagefind = await import('/pagefind/pagefind.js');
+      const pagefind = (await import(/* @vite-ignore */ '/pagefind/pagefind.js' as string)) as PagefindModule;
       await pagefind.options({ excerptLength: 28 });
       const search = await pagefind.search(query);
       const items = await Promise.all(search.results.slice(0, 12).map((r) => r.data()));
       if (!items.length) {
-        resultsEl.innerHTML = '<p class="meta">No matches.</p>';
+        const p = document.createElement('p');
+        p.className = 'meta';
+        p.textContent = 'No matches.';
+        resultsEl.replaceChildren(p);
         return;
       }
-      resultsEl.innerHTML = items
-        .map(
-          (item) => `
-        <article class="search-result">
-          <a href="${item.url}">${item.meta?.title ?? item.url}</a>
-          <p>${item.excerpt}</p>
-        </article>`,
-        )
-        .join('');
+
+      const frag = document.createDocumentFragment();
+      for (const item of items) {
+        const safeUrl = getSafeSameOriginUrl(item.url);
+        if (!safeUrl) continue;
+
+        const article = document.createElement('article');
+        article.className = 'search-result';
+
+        const link = document.createElement('a');
+        link.href = safeUrl;
+        link.textContent = item.meta?.title ?? item.url;
+
+        const p = document.createElement('p');
+        renderExcerpt(item.excerpt ?? '', p);
+
+        article.append(link, p);
+        frag.appendChild(article);
+      }
+
+      if (!frag.childNodes.length) {
+        const p = document.createElement('p');
+        p.className = 'meta';
+        p.textContent = 'No matches.';
+        resultsEl.replaceChildren(p);
+        return;
+      }
+
+      resultsEl.replaceChildren(frag);
     } catch {
-      resultsEl.innerHTML =
-        '<p class="meta">Search index not available yet. Run <code>npm run build</code> first.</p>';
+      const p = document.createElement('p');
+      p.className = 'meta';
+      p.append('Search index not available yet. Run ');
+      const code = document.createElement('code');
+      code.textContent = 'npm run build';
+      p.append(code, ' first.');
+      resultsEl.replaceChildren(p);
     }
   }
 
-  function setupSearch() {
-    const input = document.querySelector('#search-input');
+  function setupSearch(): void {
+    const input = document.querySelector<HTMLInputElement>('#search-input');
     if (!input || input.dataset.bound === '1') return;
     input.dataset.bound = '1';
-    let timer;
+    let timer: number | undefined;
     input.addEventListener('input', () => {
-      window.clearTimeout(timer);
+      if (timer !== undefined) window.clearTimeout(timer);
       timer = window.setTimeout(() => runSearch(input.value), 180);
     });
     const params = new URLSearchParams(window.location.search);
