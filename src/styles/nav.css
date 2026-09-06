@@ -218,9 +218,25 @@
   text-decoration: none;
   color: inherit;
   display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.85rem;
+  min-height: 6rem;
+}
+
+.cert-badge {
+  width: 2.75rem;
+  height: 2.75rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.cert-card-body {
+  display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  min-height: 6rem;
+  min-width: 0;
+  flex: 1;
 }
 
 .cert-card:hover {

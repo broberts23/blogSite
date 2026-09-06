@@ -7,6 +7,12 @@ export async function getPublishedPosts(): Promise<BlogPost[]> {
   return posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }
 
+export const NEW_WINDOW_DAYS = 90;
+
+export function isNew(date: Date, now = new Date()): boolean {
+  return now.valueOf() - date.valueOf() <= NEW_WINDOW_DAYS * 86_400_000;
+}
+
 export function formatDate(date: Date): string {
   return date.toLocaleDateString('en-AU', {
     year: 'numeric',

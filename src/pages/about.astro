@@ -24,10 +24,6 @@ const certs = loadCertifications();
     <div class="section-head">
       <h2>Certifications</h2>
     </div>
-    <p class="lede" style="margin-bottom: 1.25rem;">
-      Replace the placeholder entries in <code>src/data/certifications.yaml</code> with your live
-      credentials (name, dates, Credly / Microsoft Learn links).
-    </p>
     <div class="cert-grid">
       {
         certs.map((cert) => {
@@ -37,15 +33,29 @@ const certs = loadCertifications();
             : {};
           return (
             <Tag class="cert-card" {...attrs}>
-              <span class={`cert-status ${cert.status === 'active' ? '' : 'inactive'}`}>
-                {cert.status}
-              </span>
-              <strong>{cert.name}</strong>
-              <span class="issuer">{cert.issuer}</span>
-              <span class="meta">
-                Earned {formatDate(new Date(cert.earned))}
-                {cert.expires ? ` · Expires ${formatDate(new Date(cert.expires))}` : ''}
-              </span>
+              {cert.badgeUrl && (
+                <img
+                  class="cert-badge"
+                  src={cert.badgeUrl}
+                  alt=""
+                  width="48"
+                  height="48"
+                  loading="lazy"
+                />
+              )}
+              <div class="cert-card-body">
+                <span class={`cert-status ${cert.status === 'active' ? '' : 'inactive'}`}>
+                  {cert.status}
+                </span>
+                <strong>{cert.name}</strong>
+                <span class="issuer">
+                  {[cert.issuer, cert.code].filter(Boolean).join(' · ')}
+                </span>
+                <span class="meta">
+                  Earned {formatDate(new Date(cert.earned))}
+                  {cert.expires ? ` · Expires ${formatDate(new Date(cert.expires))}` : ''}
+                </span>
+              </div>
             </Tag>
           );
         })
