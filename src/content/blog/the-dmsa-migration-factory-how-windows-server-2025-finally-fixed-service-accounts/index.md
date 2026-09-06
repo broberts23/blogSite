@@ -1,8 +1,9 @@
 ---
 title: "The dMSA Migration Factory: How Windows Server 2025 Finally Fixed Service Accounts"
-description: "Every infrastructure engineer has a story about a service account. Maybe it was the SQL Server Agent credential whose password expired on a Friday night, taking down a production ETL pipeline. Maybe it was the discove..."
+description: "Migrate vulnerable legacy service accounts to passwordless delegated Managed Service Accounts using an automated Windows Server 2025 factory."
 pubDate: 2026-07-09
 tags: [powershell, aks, identity]
+heroImage: "./cover.png"
 draft: false
 ---
 Every infrastructure engineer has a story about a service account. Maybe it was the SQL Server Agent credential whose password expired on a Friday night, taking down a production ETL pipeline. Maybe it was the discovery that some internal LOB application had been running as a domain admin for seven years because "that's what the vendor told us to do." Or maybe it was the audit finding that flagged thirty-four service accounts with passwords that hadn't been rotated since Rudd was PM.

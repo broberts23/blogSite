@@ -1,8 +1,9 @@
 ---
 title: Using A Domain-Joined Jumpbox VM For Legacy PowerShell From Azure Functions
-description: Some automation problems are not really Azure Functions problems. They are dependency-bound Windows administration problems.
+description: "Bridge modern cloud automation with legacy on-premises Active Directory by invoking PowerShell commands across an Arc-connected jumpbox VM."
 pubDate: 2026-05-04
 tags: [powershell, entra, azure-functions, identity, security]
+heroImage: "./cover.png"
 draft: false
 ---
 ## Introduction and Use Cases

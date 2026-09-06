@@ -1,8 +1,9 @@
 ---
 title: "Building a Secure Password Reset API with Azure Functions, Easy Auth, and LDAPS"
-description: "In my previous infrastructure blog, we built a disposable Active Directory lab: a domain controller in its own subnet, a function app in another, Key Vault for secrets, and just enough networking glue to make it feel ..."
+description: "Build a hybrid self-service password reset API using Azure Functions, App Service Easy Auth, and secure LDAPS connectivity to Active Directory."
 pubDate: 2026-01-14
 tags: [powershell, entra, azure-functions, bicep, github, identity, microsoft-graph]
+heroImage: "./cover.png"
 draft: false
 ---
 ## Introduction

@@ -1,23 +1,34 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { loadCertifications } from '../utils/certs';
-import { formatDate } from '../utils/posts';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { loadCertifications } from "../utils/certs";
+import { formatDate } from "../utils/posts";
 
 const certs = loadCertifications();
 ---
 
 <BaseLayout
   title="About"
-  description="About Ben Roberts — Azure identity engineer and certifications."
+  description="About Ben Roberts — Azure identity, automation, and security engineer."
   current="about"
   geo="full"
 >
   <p class="eyebrow">About</p>
   <h1 class="page-title">Ben Roberts</h1>
   <p class="lede">
-    I write about Azure identity, Entra, PowerShell, and the infrastructure patterns that keep labs
-    disposable and production systems honest. This site replaces the Hashnode blog with a static
-    home that treats PowerShell as a first-class language.
+    A blog for all things Azure! Whether you're a developer or IT pro, explore
+    tips, trends, and hands-on guides to optimize and transform your workflow
+    with Microsoft Azure's powerful capabilities. Join me while I learn new
+    features and technologies from code to infrastructure.
+    <br />
+    <br />
+    I write about Azure, Entra, Identity Security, Python, PowerShell, and the infrastructure
+    patterns that keep labs disposable and production systems honest.
+    <br />
+    <br />
+    Advanced engineering at the intersection of Cloud Architecture, Identity Security,
+    and AI Automation. Explore deep-dives, hands-on architecture guides, and custom
+    tooling designed to secure and automate the enterprise. My goal is to help you
+    build secure, scalable, and efficient systems.
   </p>
 
   <section class="section reveal">
@@ -27,9 +38,13 @@ const certs = loadCertifications();
     <div class="cert-grid">
       {
         certs.map((cert) => {
-          const Tag = cert.credentialUrl ? 'a' : 'div';
+          const Tag = cert.credentialUrl ? "a" : "div";
           const attrs = cert.credentialUrl
-            ? { href: cert.credentialUrl, rel: 'noopener noreferrer', target: '_blank' }
+            ? {
+                href: cert.credentialUrl,
+                rel: "noopener noreferrer",
+                target: "_blank",
+              }
             : {};
           return (
             <Tag class="cert-card" {...attrs}>
@@ -44,16 +59,20 @@ const certs = loadCertifications();
                 />
               )}
               <div class="cert-card-body">
-                <span class={`cert-status ${cert.status === 'active' ? '' : 'inactive'}`}>
+                <span
+                  class={`cert-status ${cert.status === "active" ? "" : "inactive"}`}
+                >
                   {cert.status}
                 </span>
                 <strong>{cert.name}</strong>
                 <span class="issuer">
-                  {[cert.issuer, cert.code].filter(Boolean).join(' · ')}
+                  {[cert.issuer, cert.code].filter(Boolean).join(" · ")}
                 </span>
                 <span class="meta">
                   Earned {formatDate(new Date(cert.earned))}
-                  {cert.expires ? ` · Expires ${formatDate(new Date(cert.expires))}` : ''}
+                  {cert.expires
+                    ? ` · Expires ${formatDate(new Date(cert.expires))}`
+                    : ""}
                 </span>
               </div>
             </Tag>

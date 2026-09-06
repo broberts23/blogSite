@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getPublishedPosts, formatDate, postSlug, uniqueTags } from '../../utils/posts';
+import PostCard from '../../components/PostCard.astro';
+import { getPublishedPosts, uniqueTags } from '../../utils/posts';
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
@@ -21,14 +22,10 @@ const { tag, posts } = Astro.props;
   <p class="eyebrow">Tag</p>
   <h1 class="page-title">#{tag}</h1>
   <p class="lede">{posts.length} post{posts.length === 1 ? '' : 's'}.</p>
-  <div class="grid-posts">
+  <div class="grid-posts cols-2">
     {
       posts.map((post) => (
-        <a class="card reveal" href={`/${postSlug(post)}`}>
-          <p class="meta">{formatDate(post.data.pubDate)}</p>
-          <h2>{post.data.title}</h2>
-          <p>{post.data.description}</p>
-        </a>
+        <PostCard post={post} class="reveal" />
       ))
     }
   </div>

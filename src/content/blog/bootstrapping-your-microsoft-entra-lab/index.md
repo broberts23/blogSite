@@ -1,8 +1,9 @@
 ---
 title: Bootstrapping Your Microsoft Entra Lab
-description: "Setting up an identity lab or development environment usually starts with a blank tenant. No users, no groups, no organizational structure. Just a directory-shaped void waiting to be filled. If you're trying to get ha..."
+description: "Populate an empty Microsoft Entra tenant with users, groups, and disposable enterprise identities to simulate production security environments."
 pubDate: 2026-07-01
 tags: [entra, bicep, identity, microsoft-graph, security]
+heroImage: "./cover.png"
 draft: false
 ---
 Setting up an identity lab or development environment usually starts with a blank tenant. No users, no groups, no organizational structure. Just a directory-shaped void waiting to be filled. If you're trying to get hands-on with zero-trust patterns, secretless containerized compute, or user-context security pipelines, you need realistic directory infrastructure to practice against. You can't test SCIM provisioning against zero users. You can't validate group-based access policies against a single admin account.

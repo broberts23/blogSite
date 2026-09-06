@@ -1,8 +1,9 @@
 ---
 title: Azure API Management – Managed Certificates (Preview)
-description: "Azure API Management is a great service to manage your APIs. It provides features like throttling, caching, logging, application insights and much more. One of the features is the ability to use custom domains and SSL..."
+description: "Configure and auto-renew free TLS certificates for custom domains in Azure API Management to simplify public API endpoint administration."
 pubDate: 2023-10-14
 tags: [bicep, github]
+heroImage: "./cover.jpg"
 draft: false
 ---
 Azure API Management is a great service to manage your APIs. It provides features like throttling, caching, logging, application insights and much more. One of the features is the ability to use custom domains and SSL certificates. In this post I will show you how to use the “free” managed certificates in Azure API Management.

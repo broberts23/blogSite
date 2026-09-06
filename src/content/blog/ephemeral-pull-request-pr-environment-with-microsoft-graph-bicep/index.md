@@ -1,8 +1,9 @@
 ---
 title: Ephemeral Pull Request (PR) Environment with Microsoft Graph Bicep
-description: "This project demonstrates an end-to-end ephemeral pull request (PR) environment pattern using:"
+description: "Spin up disposable pull request environments containing both Azure resources and Microsoft Graph identity objects, fully automated via CI/CD."
 pubDate: 2025-11-09
 tags: [powershell, bicep, github, identity, microsoft-graph, security]
+heroImage: "./cover.png"
 draft: false
 ---
 ## Introduction

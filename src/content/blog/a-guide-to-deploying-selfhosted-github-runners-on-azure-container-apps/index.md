@@ -1,8 +1,9 @@
 ---
 title: A Guide to Deploying Self‑Hosted GitHub Runners on Azure Container Apps
-description: "This post is a practical deep dive into running self‑hosted GitHub Actions runners on Azure Container Apps (ACA). The goal: ephemeral, on‑demand compute that scales up only when there are GitHub workflow jobs in the q..."
+description: "Deploy ephemeral, auto-scaling GitHub Actions runners on Azure Container Apps that scale to zero when idle and launch instantly for queued workflow jobs."
 pubDate: 2024-01-01
 tags: [entra, bicep, github, identity, security]
+heroImage: "./cover.jpg"
 draft: false
 ---
 ## Introduction

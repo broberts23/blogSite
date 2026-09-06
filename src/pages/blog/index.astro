@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getPublishedPosts, formatDate, postSlug, estimateReadingTime } from '../../utils/posts';
+import PostCard from '../../components/PostCard.astro';
+import { getPublishedPosts } from '../../utils/posts';
 
 const all = await getPublishedPosts();
 const pageSize = 10;
@@ -19,25 +20,10 @@ const posts = all.slice(0, pageSize);
   <h1 class="page-title">Blog</h1>
   <p class="lede">Practical notes on Entra, Azure, PowerShell, and the labs behind them.</p>
 
-  <div class="grid-posts">
+  <div class="grid-posts cols-2">
     {
       posts.map((post) => (
-        <a class="card reveal" href={`/${postSlug(post)}`}>
-          <p class="meta">
-            {formatDate(post.data.pubDate)} · {estimateReadingTime(post.body ?? '')} min read
-          </p>
-          <h2>{post.data.title}</h2>
-          <p>{post.data.description}</p>
-          {post.data.tags.length > 0 && (
-            <ul class="tag-list">
-              {post.data.tags.slice(0, 4).map((tag) => (
-                <li>
-                  <span class="tag">#{tag}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </a>
+        <PostCard post={post} showTags={true} class="reveal" />
       ))
     }
   </div>

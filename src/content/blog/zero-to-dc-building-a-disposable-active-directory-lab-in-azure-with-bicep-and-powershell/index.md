@@ -1,8 +1,9 @@
 ---
 title: "Zero-to-DC: Building a Disposable Active Directory Lab in Azure with Bicep and PowerShell"
-description: "This all started from a very practical problem: I wanted a **disposable, repeatable Active Directory lab** I could spin up for demos, tutorials, and future blog posts (stay tuned). I needed something I could tear down..."
+description: "Spin up a fully configured, disposable Active Directory domain controller lab in Azure from scratch using modular Bicep templates and PowerShell."
 pubDate: 2025-12-14
 tags: [powershell, bicep, identity, microsoft-graph]
+heroImage: "./cover.png"
 draft: false
 ---
 ## Introduction

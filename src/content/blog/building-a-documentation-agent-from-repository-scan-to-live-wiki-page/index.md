@@ -1,8 +1,9 @@
 ---
 title: "Building a Documentation Agent: From Repository Scan to Live Wiki Page"
-description: "* * *"
+description: "Keep developer documentation continuously in sync with code by building an Azure AI Foundry agent that parses repositories and publishes wiki pages."
 pubDate: 2026-06-15
 tags: [identity, security]
+heroImage: "./cover.png"
 draft: false
 ---
 * * *

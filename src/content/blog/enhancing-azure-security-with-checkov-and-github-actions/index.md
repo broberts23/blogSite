@@ -1,8 +1,9 @@
 ---
 title: Enhancing Azure Security with Checkov and GitHub Actions
-description: "In the world of infrastructure as code (IaC), ensuring that your templates and scripts adhere to best practices for security, compliance, and reliability is paramount. Azure Bicep, a domain-specific language for deplo..."
+description: "Embed Checkov static analysis into GitHub Actions to scan Bicep infrastructure templates for compliance and security issues before deployment."
 pubDate: 2024-05-07
 tags: [bicep, github, aks, security]
+heroImage: "./cover.png"
 draft: false
 ---
 In the world of infrastructure as code (IaC), ensuring that your templates and scripts adhere to best practices for security, compliance, and reliability is paramount. Azure Bicep, a domain-specific language for deploying Azure resources, is no exception. With the increasing complexity and scale of cloud deployments, the need for automated tools to scan and secure IaC has never been more critical. One such tool that stands out in this space is Checkov.

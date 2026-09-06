@@ -1,8 +1,9 @@
 ---
 title: Enhancing Workload Resiliency with Traffic Manager and Azure Chaos Studio
-description: "In this blog , we’ll explore how to improve the resiliency of your workloads using Azure Traffic Manager and Azure Chaos Studio. We’ll delve into the concepts of chaos engineering, Traffic Manager, and Chaos Studio, o..."
+description: "Simulate regional outages and validate multi-region failover routing by combining Azure Traffic Manager with automated Azure Chaos Studio faults."
 pubDate: 2024-05-05
 tags: [microsoft-graph]
+heroImage: "./cover.png"
 draft: false
 ---
 # Introduction

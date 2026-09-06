@@ -1,8 +1,9 @@
 ---
 title: Microsoft Entra Group Source of Authority Conversion with Cloud Sync Writeback
-description: "This post explores a specific hybrid identity scenario: taking a group synchronized from Active Directory Domain Services (AD DS), changing its Source of Authority (SOA) to Microsoft Entra, and then using Microsoft En..."
+description: "Convert synchronized Active Directory groups to Microsoft Entra cloud authority while maintaining on-premises compatibility with Cloud Sync writeback."
 pubDate: 2026-03-13
 tags: [powershell, entra, identity, microsoft-graph, security]
+heroImage: "./cover.png"
 draft: false
 ---
 This post explores a specific hybrid identity scenario: taking a group synchronized from Active Directory Domain Services (AD DS), changing its Source of Authority (SOA) to Microsoft Entra, and then using Microsoft Entra Cloud Sync to write the group back to AD DS. The critical requirement in this pattern is configuring the writeback to reconnect to the *original* AD group rather than creating a duplicate object in a default Organization Unit (OU).

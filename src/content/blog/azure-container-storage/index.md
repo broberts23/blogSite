@@ -1,8 +1,9 @@
 ---
 title: Azure Container Storage.
-description: "👋 Hey there, fellow techies! Are you tired of dealing with the headache of managing storage for your container workloads? 😩 Well, fear not! Azure Container Storage is here to save the day! 🦸‍♂️💾"
+description: "Deploy and orchestrate high-performance volume storage for containerized workloads on AKS using Azure Container Storage and native cloud disks."
 pubDate: 2023-10-04
 tags: [aks]
+heroImage: "./cover.jpg"
 draft: false
 ---
 👋 Hey there, fellow techies! Are you tired of dealing with the headache of managing storage for your container workloads? 😩 Well, fear not! Azure Container Storage is here to save the day! 🦸‍♂️💾

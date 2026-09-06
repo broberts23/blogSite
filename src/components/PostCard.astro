@@ -1,0 +1,313 @@
+---
+import { Image } from 'astro:assets';
+import type { BlogPost } from '../utils/posts';
+import { formatDate, postSlug, estimateReadingTime } from '../utils/posts';
+
+interface Props {
+  post: BlogPost;
+  isLatest?: boolean;
+  showTags?: boolean;
+  class?: string;
+}
+
+const { post, isLatest = false, showTags = false, class: className = '' } = Astro.props;
+const slug = postSlug(post);
+const minutes = estimateReadingTime(post.body ?? '');
+const heroImage = post.data.heroImage;
+const transitionName = `hero-${slug.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
+---
+
+<a
+  class:list={[
+    'card',
+    'post-card',
+    heroImage ? 'has-media' : 'no-media',
+    { 'is-new': isLatest },
+    className,
+  ]}
+  href={`/${slug}`}
+>
+  {isLatest && <span class="new-badge" aria-label="Newly added">New</span>}
+
+  {
+    heroImage ? (
+      <>
+        <div class="post-card-media">
+          <Image
+            src={heroImage}
+            alt={post.data.title}
+            width={720}
+            height={450}
+            class="post-card-img"
+            style={`view-transition-name: ${transitionName};`}
+            loading="lazy"
+          />
+          <div class="post-card-scrim" />
+        </div>
+        <div class="post-card-content">
+          <p class="meta post-card-meta">
+            <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+            <span class="meta-sep">·</span>
+            <span>{minutes} min read</span>
+          </p>
+          <h3 class="post-card-title">{post.data.title}</h3>
+          <div class="post-card-summary-wrap">
+            <div class="post-card-summary-inner">
+              <p class="post-card-summary">{post.data.description}</p>
+            </div>
+          </div>
+          {showTags && post.data.tags.length > 0 && (
+            <ul class="tag-list post-card-tags">
+              {post.data.tags.slice(0, 3).map((tag) => (
+                <li>
+                  <span class="tag">#{tag}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </>
+    ) : (
+      <div class="post-card-fallback">
+        <p class="meta post-card-meta">
+          <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+          <span class="meta-sep">·</span>
+          <span>{minutes} min read</span>
+        </p>
+        <h3 class="post-card-title">{post.data.title}</h3>
+        <p class="post-card-summary">{post.data.description}</p>
+        {showTags && post.data.tags.length > 0 && (
+          <ul class="tag-list post-card-tags">
+            {post.data.tags.slice(0, 3).map((tag) => (
+              <li>
+                <span class="tag">#{tag}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    )
+  }
+</a>
+
+<style>
+  .post-card {
+    position: relative;
+    overflow: visible;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius);
+    transition:
+      border-color var(--dur) var(--ease),
+      background var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+
+  /* Image card specific layout */
+  .post-card.has-media {
+    padding: 0;
+    min-height: 19.5rem;
+    aspect-ratio: 16 / 10.5;
+    justify-content: flex-end;
+    background: var(--bg-elevated);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+  }
+
+  .post-card.has-media:hover {
+    border-color: rgba(61, 214, 245, 0.45);
+    box-shadow:
+      0 10px 32px rgba(0, 0, 0, 0.65),
+      0 0 16px -2px rgba(61, 214, 245, 0.22);
+  }
+
+  /* Clip image strictly inside media wrapper to preserve holo ring outside */
+  .post-card-media {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: var(--radius);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .post-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.72) saturate(1.05);
+    transform: scale(1);
+    transform-origin: center center;
+    transition:
+      transform var(--dur) var(--ease),
+      filter var(--dur) var(--ease);
+  }
+
+  .post-card.has-media:hover .post-card-img,
+  .post-card.has-media:focus-visible .post-card-img {
+    transform: scale(1.06);
+    filter: brightness(0.85) saturate(1.15);
+  }
+
+  /* Multi-stop scrim for legibility */
+  .post-card-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(7, 8, 12, 0.05) 0%,
+      rgba(7, 8, 12, 0.25) 35%,
+      rgba(7, 8, 12, 0.78) 65%,
+      rgba(7, 8, 12, 0.95) 90%,
+      #07080c 100%
+    );
+    transition: background var(--dur) var(--ease);
+  }
+
+  .post-card.has-media:hover .post-card-scrim,
+  .post-card.has-media:focus-visible .post-card-scrim {
+    background: linear-gradient(
+      180deg,
+      rgba(7, 8, 12, 0.02) 0%,
+      rgba(7, 8, 12, 0.3) 30%,
+      rgba(7, 8, 12, 0.85) 60%,
+      rgba(7, 8, 12, 0.97) 88%,
+      #07080c 100%
+    );
+  }
+
+  /* Overlay content */
+  .post-card-content {
+    position: relative;
+    z-index: 2;
+    padding: 1.25rem 1.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .post-card-fallback {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-card-meta {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .meta-sep {
+    opacity: 0.6;
+  }
+
+  .post-card-title {
+    margin: 0.25rem 0 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--text);
+    transition: color var(--dur) var(--ease);
+  }
+
+  .post-card:hover .post-card-title,
+  .post-card:focus-visible .post-card-title {
+    color: #ffffff;
+  }
+
+  /* Modern grid-based height accordion for buttery smooth summary reveal */
+  .post-card-summary-wrap {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--dur) var(--ease);
+  }
+
+  .post-card-summary-inner {
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity var(--dur) var(--ease),
+      transform var(--dur) var(--ease);
+  }
+
+  .post-card-summary {
+    margin: 0.4rem 0 0;
+    color: #c0c7d4;
+    font-size: 0.875rem;
+    line-height: 1.48;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .post-card-tags {
+    margin-top: 0.45rem;
+  }
+
+  /* Hover & focus reveal on pointer/hover devices */
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .post-card.has-media:hover .post-card-summary-wrap,
+    .post-card.has-media:focus-visible .post-card-summary-wrap {
+      grid-template-rows: 1fr;
+    }
+
+    .post-card.has-media:hover .post-card-summary-inner,
+    .post-card.has-media:focus-visible .post-card-summary-inner {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Touch screens, no-hover devices, and reduced motion: summary always accessible */
+  @media (hover: none), (prefers-reduced-motion: reduce) {
+    .post-card-summary-wrap {
+      grid-template-rows: 1fr;
+    }
+
+    .post-card-summary-inner {
+      opacity: 1;
+      transform: none;
+    }
+
+    .post-card-img {
+      transform: none !important;
+    }
+  }
+
+  /* Hologram badge adjustment on image card */
+  .post-card.is-new .new-badge {
+    z-index: 3;
+    top: 1rem;
+    right: 1.1rem;
+  }
+
+  @media (max-width: 640px) {
+    .post-card.has-media {
+      min-height: 18rem;
+      aspect-ratio: auto;
+    }
+
+    .post-card-content {
+      padding: 1rem 1.1rem;
+    }
+
+    .post-card-title {
+      font-size: 1.05rem;
+    }
+
+    .post-card-summary {
+      font-size: 0.84rem;
+    }
+  }
+</style>

@@ -1,8 +1,9 @@
 ---
 title: "Workload Identity Risk and Remediation with Microsoft Graph & PowerShell"
-description: "Here's a problem you might not be tracking as closely as you should: every workload identity in your Entra ID tenant—the service principals and app registrations powering your automation, CI/CD pipelines, and third-pa..."
+description: "Discover, score, and remediate risky service principals and long-lived client secrets across Entra ID using automated Microsoft Graph sweeps."
 pubDate: 2024-01-01
 tags: [powershell, entra, github, identity, microsoft-graph, security]
+heroImage: "./cover.png"
 draft: false
 ---
 ## Introduction

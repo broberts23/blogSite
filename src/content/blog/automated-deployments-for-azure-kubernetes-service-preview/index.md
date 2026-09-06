@@ -1,8 +1,9 @@
 ---
 title: Automated Deployments for Azure Kubernetes Service (Preview)
-description: "Deploying applications to an AKS cluster can be a complex and time-consuming process. But with Automated Deployments, you can automate your deployments and save time and effort."
+description: "Streamline deployment workflows to Azure Kubernetes Service using automated deployments to connect source repositories directly to AKS clusters."
 pubDate: 2023-11-03
 tags: [powershell, github, aks]
+heroImage: "./cover.png"
 draft: false
 ---
 Deploying applications to an AKS cluster can be a complex and time-consuming process. But with Automated Deployments, you can automate your deployments and save time and effort.

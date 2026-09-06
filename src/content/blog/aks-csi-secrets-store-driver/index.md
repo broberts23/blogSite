@@ -1,8 +1,9 @@
 ---
 title: AKS CSI Secrets Store Driver.
-description: Mounting Kubernetes Secrets from Azure Key Vault on AKS
+description: "Mount secrets, keys, and certificates directly from Azure Key Vault into AKS pods using the CSI Secrets Store driver and managed identities."
 pubDate: 2023-10-07
 tags: [powershell, entra, aks, identity, security]
+heroImage: "./cover.png"
 draft: false
 ---
 Mounting Kubernetes Secrets from Azure Key Vault on AKS

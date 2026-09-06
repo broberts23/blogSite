@@ -1,5 +1,6 @@
 ---
 import { render } from 'astro:content';
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPublishedPosts, formatDate, postSlug, estimateReadingTime } from '../utils/posts';
 
@@ -14,40 +15,189 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const minutes = estimateReadingTime(post.body ?? '');
+const slug = postSlug(post);
+const heroImage = post.data.heroImage;
+const transitionName = `hero-${slug.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
 ---
 
 <BaseLayout
   title={post.data.title}
   description={post.data.description}
+  image={heroImage}
   current="blog"
   density="article"
   geo="quiet"
   showProgress={true}
 >
   <article>
-    <header>
-      <p class="meta">
-        <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
-        · {minutes} min read
-      </p>
-      <h1 class="page-title">{post.data.title}</h1>
-      <p class="lede">{post.data.description}</p>
-      {
-        post.data.tags.length > 0 && (
-          <ul class="tag-list">
-            {post.data.tags.map((tag) => (
-              <li>
-                <a class="tag" href={`/tags/${encodeURIComponent(tag)}`}>
-                  #{tag}
-                </a>
-              </li>
-            ))}
-          </ul>
-        )
-      }
-    </header>
+    {
+      heroImage ? (
+        <header class="article-hero">
+          <div class="article-hero-media">
+            <Image
+              src={heroImage}
+              alt={post.data.title}
+              width={1200}
+              height={675}
+              class="article-hero-img"
+              style={`view-transition-name: ${transitionName};`}
+              loading="eager"
+            />
+            <div class="article-hero-scrim" />
+          </div>
+
+          <div class="article-hero-content">
+            <p class="meta article-meta">
+              <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+              <span class="meta-sep">·</span>
+              <span>{minutes} min read</span>
+            </p>
+            <h1 class="page-title article-title">{post.data.title}</h1>
+          </div>
+
+          {post.data.tags.length > 0 && (
+            <ul class="tag-list article-tags">
+              {post.data.tags.map((tag) => (
+                <li>
+                  <a class="tag" href={`/tags/${encodeURIComponent(tag)}`}>
+                    #{tag}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </header>
+      ) : (
+        <header class="article-hero article-hero-text">
+          <p class="meta article-meta">
+            <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+            <span class="meta-sep">·</span>
+            <span>{minutes} min read</span>
+          </p>
+          <h1 class="page-title article-title">{post.data.title}</h1>
+          {post.data.tags.length > 0 && (
+            <ul class="tag-list article-tags">
+              {post.data.tags.map((tag) => (
+                <li>
+                  <a class="tag" href={`/tags/${encodeURIComponent(tag)}`}>
+                    #{tag}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </header>
+      )
+    }
+
     <div class="prose" style="margin-top: 2rem;">
       <Content />
     </div>
   </article>
 </BaseLayout>
+
+<style>
+  .article-hero {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2.25rem;
+  }
+
+  .article-hero-media {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    max-height: 28rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    box-shadow:
+      0 12px 36px rgba(0, 0, 0, 0.65),
+      0 0 20px -4px rgba(61, 214, 245, 0.12);
+  }
+
+  .article-hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Soft multi-stop bottom vignette blending image into page */
+  .article-hero-scrim {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(7, 8, 12, 0) 0%,
+      rgba(7, 8, 12, 0.15) 50%,
+      rgba(7, 8, 12, 0.75) 82%,
+      rgba(7, 8, 12, 0.96) 100%
+    );
+  }
+
+  .article-hero-content {
+    position: relative;
+    z-index: 2;
+    margin-top: -3.75rem;
+    padding: 1.5rem 1.25rem 0;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(7, 8, 12, 0.85) 20%,
+      #07080c 60%
+    );
+    backdrop-filter: blur(4px);
+    border-radius: var(--radius);
+  }
+
+  .article-meta {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
+  }
+
+  .meta-sep {
+    opacity: 0.6;
+  }
+
+  .article-title {
+    margin: 0.4rem 0 0;
+    font-size: clamp(1.85rem, 4vw, 2.75rem);
+    line-height: 1.15;
+    color: var(--text);
+  }
+
+  .article-tags {
+    margin-top: 1.25rem;
+    padding-left: 1.25rem;
+  }
+
+  .article-hero-text .article-tags {
+    padding-left: 0;
+  }
+
+  @media (max-width: 640px) {
+    .article-hero-media {
+      aspect-ratio: 16 / 10;
+      max-height: 18rem;
+    }
+
+    .article-hero-content {
+      margin-top: 0.75rem;
+      padding: 0;
+      background: none;
+      backdrop-filter: none;
+    }
+
+    .article-tags {
+      padding-left: 0;
+    }
+  }
+</style>

@@ -1,8 +1,9 @@
 ---
 title: Enterprise Proxy Configuration for Azure Function Apps
-description: "Configuring outbound connectivity for Azure Function Apps is a critical consideration in enterprise environments, especially when balancing security, compliance, and operational requirements. This post explores how to..."
+description: "Route outbound Azure Function traffic through enterprise inspection proxies while preserving TLS integrity and internal cloud communications."
 pubDate: 2025-07-11
 tags: [entra, security]
+heroImage: "./cover.png"
 draft: false
 ---
 Configuring outbound connectivity for Azure Function Apps is a critical consideration in enterprise environments, especially when balancing security, compliance, and operational requirements. This post explores how to configure proxy settings for Azure Function Apps using environment variables, when to use a proxy versus Azure Firewall, and how to automate these settings in your CI/CD pipeline.
