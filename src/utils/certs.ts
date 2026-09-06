@@ -4,6 +4,8 @@ import yaml from 'js-yaml';
 
 export interface Certification {
   name: string;
+  code?: string;
+  badgeUrl?: string;
   issuer: string;
   earned: string;
   expires?: string | null;

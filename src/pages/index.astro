@@ -45,9 +45,23 @@ const showNewCert = Boolean(newestCert && isNew(new Date(newestCert.earned)));
                 href={cert.credentialUrl || '/about'}
               >
                 {isLatest && <span class="new-badge" aria-label="Newly added">New</span>}
-                <span class="cert-status">{cert.status}</span>
-                <strong>{cert.name}</strong>
-                <span class="issuer">{cert.issuer}</span>
+                {cert.badgeUrl && (
+                  <img
+                    class="cert-badge"
+                    src={cert.badgeUrl}
+                    alt=""
+                    width="48"
+                    height="48"
+                    loading="lazy"
+                  />
+                )}
+                <div class="cert-card-body">
+                  <span class="cert-status">{cert.status}</span>
+                  <strong>{cert.name}</strong>
+                  <span class="issuer">
+                    {[cert.issuer, cert.code].filter(Boolean).join(' · ')}
+                  </span>
+                </div>
               </a>
             );
           })}

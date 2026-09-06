@@ -385,6 +385,10 @@ a:hover {
   z-index: 2;
 }
 
+.cert-card.is-new .cert-status {
+  padding-right: 3.5rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .card.is-new::before,
   .cert-card.is-new::before {
