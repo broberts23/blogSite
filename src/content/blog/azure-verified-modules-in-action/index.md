@@ -1,8 +1,9 @@
 ---
 title: "Azure Verified Modules: In Action"
-description: "In this blog, I will be demonstrating how to use [Azure Verified Modules](https://azure.github.io/Azure-Verified-Modules/) (AVM) from the Azure Public Githib Repository. Azure Verified Modules are a set of pre-built, ..."
+description: "Accelerate cloud infrastructure deployments using Azure Verified Modules to build consistent, battle-tested Bicep modules backed by Microsoft."
 pubDate: 2024-04-06
 tags: [bicep, github, aks, identity]
+heroImage: "./cover.png"
 draft: false
 ---
 In this blog, I will be demonstrating how to use [Azure Verified Modules](https://azure.github.io/Azure-Verified-Modules/) (AVM) from the Azure Public Githib Repository. Azure Verified Modules are a set of pre-built, pre-tested, and pre-configured modules that allow you to quickly deploy and configure Azure services. These modules are built by Microsoft and are verified by the Azure team to ensure they meet specific quality standards such as the Azure Cloud Adoption Framework (CAF).

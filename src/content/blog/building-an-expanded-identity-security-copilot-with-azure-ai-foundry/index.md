@@ -1,8 +1,9 @@
 ---
 title: Building an Expanded Identity Security Copilot with Azure AI Foundry
-description: "* * *"
+description: "Construct a grounded identity security assistant with Azure AI Foundry and AI Search to answer complex policy and entitlement questions reliably."
 pubDate: 2026-06-08
 tags: [identity, microsoft-graph, security]
+heroImage: "./cover.png"
 draft: false
 ---
 * * *

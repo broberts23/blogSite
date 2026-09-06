@@ -1,8 +1,9 @@
 ---
 title: Just-In-Time Privilege Elevation for Windows Server 2025 dMSAs
-description: "We've all lived through the incident. A critical production deployment goes sideways, the platform engineering team scrambles, they hit the JIT access portal, swipe through MFA, and within thirty seconds they have tem..."
+description: "Eliminate standing administrative rights on Windows Server 2025 delegated accounts using a serverless JIT elevation bridge powered by Azure Arc."
 pubDate: 2026-07-13
 tags: [powershell, entra, identity]
+heroImage: "./cover.png"
 draft: false
 ---
 We've all lived through the incident. A critical production deployment goes sideways, the platform engineering team scrambles, they hit the JIT access portal, swipe through MFA, and within thirty seconds they have temporary admin rights to the affected servers. Sixty minutes later, the clock runs out and those rights evaporate. That is Zero Standing Privilege applied to people, and it works.

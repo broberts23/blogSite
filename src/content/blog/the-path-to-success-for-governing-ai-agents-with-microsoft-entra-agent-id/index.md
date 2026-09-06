@@ -1,8 +1,9 @@
 ---
 title: The Path to Success for Governing AI Agents with Microsoft Entra Agent ID
-description: Most organizations do not wake up one morning and decide to run an agent fleet. It happens in increments. A Copilot appears to summarize meetings. A bot gets introduced to triage requests. A workflow assistant starts ...
+description: "Establish robust identity boundaries, credential hygiene, and lifecycle governance for autonomous enterprise agents using Microsoft Entra Agent ID."
 pubDate: 2026-03-31
 tags: [entra, identity]
+heroImage: "./cover.png"
 draft: false
 ---
 ## Introduction

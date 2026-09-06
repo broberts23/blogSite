@@ -1,8 +1,9 @@
 ---
 title: Automating Blob Cleanup with Azure Storage Lifecycle Management Policies
-description: "Sometimes the solution you're building doesn't need another Function App, another timer trigger, or another piece of custom code to maintain. Azure Storage has a built-in lifecycle management engine that can handle ag..."
+description: "Automate age-based blob retention and tiered cleanup natively in Azure Storage lifecycle policies without running serverless compute or cron jobs."
 pubDate: 2025-08-31
 tags: [entra, bicep]
+heroImage: "./cover.png"
 draft: false
 ---
 Sometimes the solution you're building doesn't need another Function App, another timer trigger, or another piece of custom code to maintain. Azure Storage has a built-in lifecycle management engine that can handle age-based cleanup policies entirely within the service—no compute, no secrets, no runtime to monitor. This post walks through how lifecycle policies work, what you can do with them, and how to deploy them cleanly using Bicep.

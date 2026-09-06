@@ -1,8 +1,9 @@
 ---
 title: Why securing Microsoft Graph Command Line Tools matters
-description: Graph PowerShell is one of the most convenient ways to work with Microsoft Graph. It's also one of the easiest ways to accidentally expand what a user can read or change across your tenant.
+description: "Audit and restrict Microsoft Graph PowerShell permissions to prevent delegated credential abuse and accidental tenant-wide privilege sprawl."
 pubDate: 2026-04-30
 tags: [powershell, entra, identity, microsoft-graph, security]
+heroImage: "./cover.png"
 draft: false
 ---
 Graph PowerShell is one of the most convenient ways to work with Microsoft Graph. It's also one of the easiest ways to accidentally expand what a user can read or change across your tenant.

@@ -1,8 +1,9 @@
 ---
 title: Enhance Entra Identity Governance with Azure Event Grid
-description: "Microsoft Graph change notifications are a great building block, but the “classic” model (hosting a public HTTPS webhook) tends to get uncomfortable fast and won't make you any friends in the Cybersecurity or Networki..."
+description: "Stream Microsoft Graph change notifications directly into Azure Event Grid to build resilient, serverless identity governance and lifecycle workflows."
 pubDate: 2026-02-01
 tags: [powershell, entra, identity, microsoft-graph, security]
+heroImage: "./cover.png"
 draft: false
 ---
 Microsoft Graph change notifications are a great building block, but the “classic” model (hosting a public HTTPS webhook) tends to get uncomfortable fast and won't make you any friends in the Cybersecurity or Networking/Gateway teams to manage the internet-exposed endpoint. 🤣

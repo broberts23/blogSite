@@ -1,8 +1,9 @@
 ---
 title: Scaling AKS Workloads with Vertical Pod Autoscaler (VPA)
-description: "As your Kubernetes workloads grow, it can be challenging to ensure that your pods have the correct resource allocation to run efficiently. That’s where the Azure Kubernetes Service (AKS) Vertical Pod Autoscaler (VPA) ..."
+description: "Tune Kubernetes container resource allocations automatically in Azure Kubernetes Service using the Vertical Pod Autoscaler to balance cost and scale."
 pubDate: 2023-10-27
 tags: [aks]
+heroImage: "./cover.jpg"
 draft: false
 ---
 As your Kubernetes workloads grow, it can be challenging to ensure that your pods have the correct resource allocation to run efficiently. That’s where the Azure Kubernetes Service (AKS) Vertical Pod Autoscaler (VPA) comes in.

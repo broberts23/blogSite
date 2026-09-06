@@ -1,8 +1,9 @@
 ---
 title: Building PowerShell GUI Applications with Windows Presentation Foundation (WPF)
-description: "As PowerShell continues to evolve as a versatile automation tool, many administrators and developers are discovering the power of combining it with Windows Presentation Foundation (WPF) to create sophisticated graphic..."
+description: "Combine PowerShell scripts with modern Windows Presentation Foundation markup to create responsive, validated graphical administrative tools."
 pubDate: 2025-03-28
 tags: [powershell, microsoft-graph]
+heroImage: "./cover.webp"
 draft: false
 ---
 As PowerShell continues to evolve as a versatile automation tool, many administrators and developers are discovering the power of combining it with Windows Presentation Foundation (WPF) to create sophisticated graphical user interfaces. In this post, I'll walk through a real-world example of building a multi-input validation form with PowerShell and WPF.

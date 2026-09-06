@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
 import { getPublishedPosts, formatDate, postSlug, isNew } from '../utils/posts';
 import { loadCertifications } from '../utils/certs';
 
@@ -82,17 +83,7 @@ const showNewCert = Boolean(newestCert && isNew(new Date(newestCert.earned)));
         <div class="grid-posts cols-2">
           {posts.map((post) => {
             const isLatest = showNewPost && post === newestPost;
-            return (
-              <a
-                class:list={['card', { 'is-new': isLatest }]}
-                href={`/${postSlug(post)}`}
-              >
-                {isLatest && <span class="new-badge" aria-label="Newly added">New</span>}
-                <p class="meta">{formatDate(post.data.pubDate)}</p>
-                <h3>{post.data.title}</h3>
-                <p>{post.data.description}</p>
-              </a>
-            );
+            return <PostCard post={post} isLatest={isLatest} />;
           })}
         </div>
       )

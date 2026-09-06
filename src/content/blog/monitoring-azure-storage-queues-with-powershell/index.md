@@ -1,8 +1,9 @@
 ---
 title: Monitoring Azure Storage Queues with PowerShell
-description: "Keeping an eye on Azure Storage Queue backlogs is essential for reliable systems and scale decisions. Most teams want per-queue visibility (not just account-level metrics), simple dashboards/alerts, and a repeatable d..."
+description: "Track message backlogs and queue processing latency across Azure Storage accounts using lightweight PowerShell automation and metric exports."
 pubDate: 2025-08-23
 tags: [powershell, bicep, github, identity]
+heroImage: "./cover.png"
 draft: false
 ---
 Keeping an eye on Azure Storage Queue backlogs is essential for reliable systems and scale decisions. Most teams want per-queue visibility (not just account-level metrics), simple dashboards/alerts, and a repeatable deployment story. This blog documents a practical approach I use in this GitHub [repo](https://github.com/broberts23/storage-queue-metric). A PowerShell Azure Function that emits per-queue message counts as custom metrics to Application Insights, plus Bicep and GitHub Actions to deploy the environment and seed test data.

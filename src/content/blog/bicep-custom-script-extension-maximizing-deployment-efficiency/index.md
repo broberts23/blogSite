@@ -1,8 +1,9 @@
 ---
 title: "Bicep Custom Script Extension: Maximizing Deployment Efficiency"
-description: "In the fast-paced world of cloud infrastructure, automation stands as the cornerstone of operational efficiency. Microsoft Azure, with its rich suite of tools and extensions, significantly enhances the deployment proc..."
+description: "Bootstrap and configure Azure virtual machines during deployment by pairing Bicep templates with the Windows and Linux Custom Script Extensions."
 pubDate: 2024-04-29
 tags: [powershell, bicep, github, aks, identity, security]
+heroImage: "./cover.png"
 draft: false
 ---
 In the fast-paced world of cloud infrastructure, automation stands as the cornerstone of operational efficiency. Microsoft Azure, with its rich suite of tools and extensions, significantly enhances the deployment processes. Among these tools, the Custom Script Extension for Windows (and Linux) is particularly valuable. It allows users to execute custom scripts on virtual machines (VMs) during deployment, facilitating tailored configurations and setups without the need for manual intervention. In this blog post, we will explore how to harness the power of the Custom Script Extension to automate Windows VM deployments in Azure, with a special focus on leveraging Bicep templates.

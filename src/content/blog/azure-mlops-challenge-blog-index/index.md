@@ -1,8 +1,9 @@
 ---
 title: Azure MLOps Challenge Blog Index
-description: Below is a collection of all eight challenge blogs in the MLOps series.
+description: "An eight-part architectural guide and challenge index walking through end-to-end MLOps pipeline automation and deployment on Microsoft Azure."
 pubDate: 2023-10-05
 tags: []
+heroImage: "./cover.png"
 draft: false
 ---
 Below is a collection of all eight challenge blogs in the MLOps series.

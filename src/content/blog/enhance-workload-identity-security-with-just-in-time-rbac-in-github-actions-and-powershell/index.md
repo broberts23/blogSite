@@ -1,8 +1,9 @@
 ---
 title: Enhance Workload Identity Security with Just-In-Time RBAC in GitHub Actions and PowerShell
-description: "This post was born from the idea of, \"gee I wonder if you could create a Just-In-Time (JIT) privileged access workflow using GitHub Actions?\" After some experimentation and much debugging, the answer is yes 😆 — and t..."
+description: "Grant automation identities temporary elevated permissions on demand by orchestrating just-in-time Azure RBAC through GitHub Actions and OIDC."
 pubDate: 2025-11-07
 tags: [powershell, entra, github, identity, microsoft-graph, security]
+heroImage: "./cover.png"
 draft: false
 ---
 ## Introduction

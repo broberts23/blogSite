@@ -1,8 +1,9 @@
 ---
 title: "Bicep Deployment Scripts: Extending Azure Resource Deployment"
-description: "Hey there tech enthusiasts! Today, let’s dive into the world of Azure deployment scripts using Bicep, Microsoft’s DSL for Azure Resource Manager templates. Bicep Deployment Scripts are a powerful tool that enhances th..."
+description: "Execute native PowerShell and CLI automation directly inside Bicep templates using deployment scripts to handle complex orchestration tasks."
 pubDate: 2024-04-19
 tags: [powershell, bicep, identity]
+heroImage: "./cover.png"
 draft: false
 ---
 Hey there tech enthusiasts! Today, let’s dive into the world of Azure deployment scripts using Bicep, Microsoft’s DSL for Azure Resource Manager templates. Bicep Deployment Scripts are a powerful tool that enhances the deployment of Azure resources by combining the flexibility of Bicep with the power of PowerShell or Azure CLI.

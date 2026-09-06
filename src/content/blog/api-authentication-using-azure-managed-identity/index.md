@@ -1,8 +1,9 @@
 ---
 title: API Authentication using Azure Managed Identity
-description: "Authentication to Azure APIs has traditionally relied on service principals with client secrets or certificates. While effective, managing these credentials introduces operational complexity and security risks. Azure ..."
+description: "Replace vulnerable client secrets with Azure Managed Identity to acquire tokens and authenticate securely across Azure and Microsoft Graph APIs."
 pubDate: 2025-03-03
 tags: [powershell, entra, identity, security]
+heroImage: "./cover.png"
 draft: false
 ---
 Authentication to Azure APIs has traditionally relied on service principals with client secrets or certificates. While effective, managing these credentials introduces operational complexity and security risks. Azure Managed Identity offers a compelling alternative by eliminating the need to manage credentials entirely. I recently had the opportunity to work with Managed Identity tokens and found some nuances in token acquisition and usage that are important to understand for successful implementation.
