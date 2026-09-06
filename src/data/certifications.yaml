@@ -91,24 +91,6 @@
   status: active
   credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/AA92DFB34E9FF73?sharingId=CE9E019B345FC5AB"
 
-- name: "Microsoft Certified: Information Protection and Compliance Administrator Associate"
-  code: SC-400
-  badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-associate-badge.svg?branch=main"
-  issuer: Microsoft
-  earned: "2022-05-23"
-  expired: "2023-05-23"
-  status: inactive
-  credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/ABC2C858B57AC8A7?sharingId=CE9E019B345FC5AB"
-
-- name: "Microsoft 365 Certified: Security Administrator Associate"
-  code: MS-500
-  badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-associate-badge.svg?branch=main"
-  issuer: Microsoft
-  earned: "2022-05-06"
-  expired: "2025-05-06"
-  status: inactive
-  credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/7163137DBCEABCC8?sharingId=CE9E019B345FC5AB"
-
 - name: "Microsoft Certified: Cybersecurity Architect Expert"
   code: AZ-400
   badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-expert-badge.svg?branch=main"
@@ -235,8 +217,26 @@
   status: active
   credentialUrl: "https://www.credly.com/earner/earned/badge/0bde739f-9cfb-45fb-a743-8b5f32a9f1b8"
 
+- name: "Microsoft Certified: Information Protection and Compliance Administrator Associate"
+  code: SC-400
+  badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-associate-badge.svg?branch=main"
+  issuer: Microsoft
+  earned: "2022-05-23"
+  expired: "2023-05-23"
+  status: inactive
+  credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/ABC2C858B57AC8A7?sharingId=CE9E019B345FC5AB"
+
+- name: "Microsoft 365 Certified: Security Administrator Associate"
+  code: MS-500
+  badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-associate-badge.svg?branch=main"
+  issuer: Microsoft
+  earned: "2022-05-06"
+  expired: "2025-05-06"
+  status: inactive
+  credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/7163137DBCEABCC8?sharingId=CE9E019B345FC5AB"
+
 - name: "HashiCorp Certified: Terraform Associate"
-  code: 003
+  code: "003"
   badgeUrl: "https://images.credly.com/size/680x680/images/0dc62494-dc94-469a-83af-e35309f27356/blob"
   issuer: "IBM Professional Certification"
   earned: "2024-06-11"
