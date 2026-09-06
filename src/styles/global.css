@@ -270,6 +270,128 @@ a:hover {
   font-size: 0.95rem;
 }
 
+/* Hologram border & NEW badge for newest items */
+@property --holo-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes holo-spin {
+  to {
+    --holo-angle: 360deg;
+  }
+}
+
+.card.is-new,
+.cert-card.is-new {
+  position: relative;
+  border-color: transparent;
+}
+
+.card.is-new:hover,
+.cert-card.is-new:hover {
+  border-color: transparent;
+}
+
+.card.is-new::before,
+.cert-card.is-new::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border-radius: calc(var(--radius) + 1.5px);
+  background: conic-gradient(
+    from var(--holo-angle, 0deg),
+    #3dd6f5 0%,
+    #a78bfa 25%,
+    #e8b84a 50%,
+    #34d399 75%,
+    #3dd6f5 100%
+  );
+  z-index: 0;
+  pointer-events: none;
+  animation: holo-spin 8s linear infinite;
+  box-shadow:
+    0 0 16px -2px rgba(61, 214, 245, 0.35),
+    0 0 8px -1px rgba(232, 184, 74, 0.25);
+  transition:
+    box-shadow 0.2s var(--ease),
+    filter 0.2s var(--ease);
+}
+
+.card.is-new::after,
+.cert-card.is-new::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  z-index: 0;
+  pointer-events: none;
+  transition: background 0.2s var(--ease);
+}
+
+.card.is-new:hover::after,
+.cert-card.is-new:hover::after {
+  background: var(--bg-hover);
+}
+
+.card.is-new:hover::before,
+.cert-card.is-new:hover::before {
+  box-shadow:
+    0 0 22px -2px rgba(61, 214, 245, 0.55),
+    0 0 12px -1px rgba(232, 184, 74, 0.35);
+  filter: brightness(1.2);
+}
+
+.card.is-new > *,
+.cert-card.is-new > * {
+  position: relative;
+  z-index: 1;
+}
+
+.new-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius);
+  color: #3dd6f5;
+  background: rgba(61, 214, 245, 0.12);
+  border: 1px solid rgba(61, 214, 245, 0.45);
+  box-shadow: 0 0 10px -2px rgba(61, 214, 245, 0.35);
+  line-height: 1.2;
+}
+
+.card.is-new .new-badge {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.35rem;
+  z-index: 2;
+}
+
+.card.is-new .meta {
+  padding-right: 3.5rem;
+}
+
+.cert-card.is-new .new-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1.1rem;
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card.is-new::before,
+  .cert-card.is-new::before {
+    animation: none;
+  }
+}
+
 .grid-posts {
   display: grid;
   gap: 1rem;
