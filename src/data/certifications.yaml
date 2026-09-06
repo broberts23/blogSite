@@ -93,7 +93,7 @@
 
 - name: "Microsoft Certified: Information Protection and Compliance Administrator Associate"
   code: SC-400
-  badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-information-protection-and-compliance-administrator-associate-badge.svg?branch=main"
+  badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-associate-badge.svg?branch=main"
   issuer: Microsoft
   earned: "2022-05-23"
   expires: "2023-05-23"
