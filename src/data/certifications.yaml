@@ -55,7 +55,7 @@
   status: active
   credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/A04E95F6D1763190?sharingId=CE9E019B345FC5AB"
 
-- name: "Microsoft Certified: GitHub Copilot"
+- name: "GitHub Certified: GitHub Copilot"
   code: GH-300
   badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/github-copilot.svg?branch=main"
   issuer: GitHub
@@ -96,7 +96,7 @@
   badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-associate-badge.svg?branch=main"
   issuer: Microsoft
   earned: "2022-05-23"
-  expires: "2023-05-23"
+  expired: "2023-05-23"
   status: inactive
   credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/ABC2C858B57AC8A7?sharingId=CE9E019B345FC5AB"
 
@@ -105,7 +105,7 @@
   badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-associate-badge.svg?branch=main"
   issuer: Microsoft
   earned: "2022-05-06"
-  expires: "2025-05-06"
+  expired: "2025-05-06"
   status: inactive
   credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/7163137DBCEABCC8?sharingId=CE9E019B345FC5AB"
 
@@ -189,3 +189,57 @@
   expires: "2027-07-27"
   status: active
   credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/C68B28C3ACB1F9C2?sharingId=CE9E019B345FC5AB"
+
+- name: "GitHub Certified: GitHub Actions"
+  code: GH-200
+  badgeUrl: "https://images.credly.com/size/680x680/images/89efc3e7-842b-4790-b09b-9ea5efc71ec3/image.png"
+  issuer: GitHub
+  earned: "2024-05-16"
+  expires: "2027-05-16"
+  status: active
+  credentialUrl: "https://www.credly.com/earner/earned/badge/750b52b9-fb2b-4717-8d54-fa9e817aabd9"
+
+- name: "GitHub Certified: GitHub Advanced Security"
+  code: GH-500
+  badgeUrl: "https://images.credly.com/size/680x680/images/c9ed294b-f8ac-48fa-a8c3-96dab1f110f2/image.png"
+  issuer: GitHub
+  earned: "2024-05-30"
+  expires: "2027-05-30"
+  status: active
+  credentialUrl: "https://www.credly.com/earner/earned/badge/310f0bde-3e8e-4c26-854f-edde470df307"
+
+- name: "Linux Foundation Certified Systems Administrator"
+  code: LFCS
+  badgeUrl: "https://images.credly.com/size/680x680/images/1e6611ca-8afe-4ecc-ad4d-305fba52ee7e/1_LFCS-600x600.png"
+  issuer: "The Linux Foundation"
+  earned: "2024-02-21"
+  expires: "2027-02-21"
+  status: active
+  credentialUrl: "https://www.credly.com/earner/earned/badge/1227afe8-47ff-46f9-b5d1-683ac2c83e13"
+
+- name: "Certified Kubernetes Application Developer"
+  code: CKAD
+  badgeUrl: "https://images.credly.com/size/680x680/images/cc8adc83-1dc6-4d57-8e20-22171247e052/blob"
+  issuer: "The Linux Foundation"
+  earned: "2024-03-14"
+  expires: "2027-03-15"
+  status: active
+  credentialUrl: "https://www.credly.com/earner/earned/badge/a8d2caad-eece-4ee1-a04f-f35623e54f8b"
+
+- name: "Certified Kubernetes Administrator"
+  code: CKA
+  badgeUrl: "https://images.credly.com/size/680x680/images/8b8ed108-e77d-4396-ac59-2504583b9d54/cka_from_cncfsite__281_29.png"
+  issuer: "The Linux Foundation"
+  earned: "2024-01-03"
+  expires: "2027-01-03"
+  status: active
+  credentialUrl: "https://www.credly.com/earner/earned/badge/0bde739f-9cfb-45fb-a743-8b5f32a9f1b8"
+
+- name: "HashiCorp Certified: Terraform Associate"
+  code: 003
+  badgeUrl: "https://images.credly.com/size/680x680/images/0dc62494-dc94-469a-83af-e35309f27356/blob"
+  issuer: "IBM Professional Certification"
+  earned: "2024-06-11"
+  expired: "2026-06-11"
+  status: inactive
+  credentialUrl: "https://www.credly.com/earner/earned/badge/e8af8910-9f46-425e-bf62-909368fd3b17"
