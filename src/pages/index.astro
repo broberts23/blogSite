@@ -40,10 +40,12 @@ const showNewCert = Boolean(newestCert && isNew(new Date(newestCert.earned)));
         <div class="cert-grid cert-row">
           {certs.map((cert) => {
             const isLatest = showNewCert && cert === newestCert;
+            const isExternal = Boolean(cert.credentialUrl);
             return (
               <a
                 class:list={['cert-card', { 'is-new': isLatest }]}
                 href={cert.credentialUrl || '/about'}
+                {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               >
                 {isLatest && <span class="new-badge" aria-label="Newly added">New</span>}
                 {cert.badgeUrl && (
