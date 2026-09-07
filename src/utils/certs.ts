@@ -33,6 +33,11 @@ export function sanitizeCertUrl(urlStr?: string | null): string | undefined {
   }
 }
 
+export function isExpertCertification(cert: Certification): boolean {
+  if (/\bExpert\b/i.test(cert.name)) return true;
+  return Boolean(cert.badgeUrl?.includes('microsoft-certified-expert-badge'));
+}
+
 export function loadCertifications(): Certification[] {
   const file = path.join(process.cwd(), 'src/data/certifications.yaml');
   const raw = fs.readFileSync(file, 'utf8');

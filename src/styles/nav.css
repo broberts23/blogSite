@@ -231,6 +231,31 @@
   flex-shrink: 0;
 }
 
+@keyframes cert-badge-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px rgba(232, 184, 74, 0.35));
+  }
+  50% {
+    filter: drop-shadow(0 0 10px rgba(232, 184, 74, 0.7)) drop-shadow(0 0 2px rgba(255, 235, 160, 0.8));
+  }
+}
+
+.cert-card.is-expert .cert-badge {
+  animation: cert-badge-glow 4s ease-in-out infinite;
+  transition: filter 0.2s var(--ease);
+}
+
+.cert-card.is-expert:hover .cert-badge {
+  filter: drop-shadow(0 0 12px rgba(232, 184, 74, 0.85)) drop-shadow(0 0 4px rgba(255, 240, 180, 0.95));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cert-card.is-expert .cert-badge {
+    animation: none;
+    filter: drop-shadow(0 0 6px rgba(232, 184, 74, 0.45));
+  }
+}
+
 .cert-card-body {
   display: flex;
   flex-direction: column;
