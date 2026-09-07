@@ -396,6 +396,145 @@ a:hover {
   }
 }
 
+/* Expert certification gold foil effect */
+.cert-card.is-expert {
+  position: relative;
+  border-color: transparent;
+}
+
+.cert-card.is-expert:hover {
+  border-color: transparent;
+}
+
+.cert-card.is-expert::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border-radius: calc(var(--radius) + 1.5px);
+  background: conic-gradient(
+    from var(--holo-angle, 0deg),
+    #e8b84a 0%,
+    #ffd978 20%,
+    #c69224 40%,
+    #fff1c5 60%,
+    #e8b84a 80%,
+    #ffd978 100%
+  );
+  z-index: 0;
+  pointer-events: none;
+  animation: holo-spin 12s linear infinite;
+  box-shadow:
+    0 0 16px -2px rgba(232, 184, 74, 0.35),
+    0 0 8px -1px rgba(255, 217, 120, 0.25);
+  transition:
+    box-shadow 0.2s var(--ease),
+    filter 0.2s var(--ease);
+}
+
+.cert-card.is-expert::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  z-index: 0;
+  pointer-events: none;
+  transition: background 0.2s var(--ease);
+}
+
+.cert-card.is-expert:hover::after {
+  background: var(--bg-hover);
+}
+
+.cert-card.is-expert:hover::before {
+  box-shadow:
+    0 0 22px -2px rgba(232, 184, 74, 0.55),
+    0 0 12px -1px rgba(255, 217, 120, 0.4);
+  filter: brightness(1.2);
+}
+
+.cert-card.is-expert > * {
+  position: relative;
+  z-index: 1;
+}
+
+.cert-card.is-expert .cert-expert-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cert-card.is-expert .cert-expert-sheen::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 42%,
+    rgba(232, 184, 74, 0.05) 46%,
+    rgba(255, 238, 175, 0.22) 50%,
+    rgba(232, 184, 74, 0.05) 54%,
+    transparent 58%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: cert-sheen-sweep 7s ease-in-out infinite;
+}
+
+@keyframes cert-sheen-sweep {
+  0%, 25% {
+    transform: translateX(-100%);
+  }
+  55%, 100% {
+    transform: translateX(100%);
+  }
+}
+
+.expert-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius);
+  color: #e8b84a;
+  background: rgba(232, 184, 74, 0.12);
+  border: 1px solid rgba(232, 184, 74, 0.45);
+  box-shadow: 0 0 10px -2px rgba(232, 184, 74, 0.35);
+  line-height: 1.2;
+}
+
+.cert-card.is-expert .expert-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1.1rem;
+  z-index: 2;
+}
+
+.cert-card.is-expert .cert-status {
+  padding-right: 4.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cert-card.is-expert::before {
+    animation: none;
+  }
+  .cert-card.is-expert .cert-expert-sheen::after {
+    animation: none;
+    display: none;
+  }
+}
+
 .grid-posts {
   display: grid;
   gap: 1rem;

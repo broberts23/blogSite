@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { loadCertifications } from "../utils/certs";
+import { loadCertifications, isExpertCertification } from "../utils/certs";
 import { formatDate } from "../utils/posts";
 
 const certs = loadCertifications().sort((a, b) => {
@@ -41,6 +41,7 @@ const certs = loadCertifications().sort((a, b) => {
     <div class="cert-grid">
       {
         certs.map((cert) => {
+          const isExpert = isExpertCertification(cert);
           const Tag = cert.credentialUrl ? "a" : "div";
           const attrs = cert.credentialUrl
             ? {
@@ -51,7 +52,13 @@ const certs = loadCertifications().sort((a, b) => {
             : {};
           const expiredDate = cert.expired || cert.expires;
           return (
-            <Tag class="cert-card" {...attrs}>
+            <Tag class:list={["cert-card", { "is-expert": isExpert }]} {...attrs}>
+              {isExpert && (
+                <span class="expert-badge" aria-label="Expert level certification">
+                  Expert
+                </span>
+              )}
+              {isExpert && <span class="cert-expert-sheen" aria-hidden="true" />}
               {cert.badgeUrl && (
                 <img
                   class="cert-badge"
