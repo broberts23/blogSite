@@ -1,6 +1,6 @@
 # benroberts.io
 
-> Azure identity, Entra, PowerShell, and infrastructure automation notes by Ben Roberts.
+> Azure identity security, Entra, AI agents, and infrastructure automation notes by Ben Roberts.
 
 ## Site
 - Blog: https://benroberts.io/blog

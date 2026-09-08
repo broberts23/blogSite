@@ -1,8 +1,8 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import PostCard from '../components/PostCard.astro';
-import { getPublishedPosts, formatDate, postSlug, isNew } from '../utils/posts';
-import { loadCertifications } from '../utils/certs';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PostCard from "../components/PostCard.astro";
+import { getPublishedPosts, formatDate, postSlug, isNew } from "../utils/posts";
+import { loadCertifications } from "../utils/certs";
 
 const allPosts = await getPublishedPosts();
 const posts = allPosts.slice(0, 4);
@@ -10,19 +10,29 @@ const newestPost = allPosts[0];
 const showNewPost = Boolean(newestPost && isNew(newestPost.data.pubDate));
 
 const activeCerts = loadCertifications()
-  .filter((c) => c.status === 'active')
+  .filter((c) => c.status === "active")
   .sort((a, b) => new Date(b.earned).valueOf() - new Date(a.earned).valueOf());
 const certs = activeCerts.slice(0, 4);
 const newestCert = activeCerts[0];
 const showNewCert = Boolean(newestCert && isNew(new Date(newestCert.earned)));
 ---
 
-<BaseLayout title="Ben Roberts" current="home" geo="full">
+<BaseLayout
+  title="Ben Roberts"
+  description="Ben Roberts: Azure identity security, Entra, AI agents, Azure Foundry, and automation."
+  current="home"
+  geo="full"
+>
   <section class="hero reveal">
-    <p class="eyebrow">Cloud · Identity · Automation</p>
+    <p class="eyebrow">Cloud · Identity · AI & Automation</p>
     <h1 class="hero-name">Ben Roberts</h1>
     <p class="hero-role">
-      Azure identity security, Entra, PowerShell, and infrastructure automation — written for people who build the lab and ship the fix.
+      I'm a cloud engineer specializing in Azure and Entra identity security,
+      automation, and infrastructure. This site is my open notebook where I
+      share practical, lab-tested guides: from Entra governance, workload
+      identities and infrastructure as code to agentic workflows in Azure
+      Foundry. It's written for anyone who loves to dig in, test things
+      thoroughly, and ship real fixes.
     </p>
     <div class="hero-actions">
       <a class="btn btn-primary" href="/blog">Read the blog</a>
@@ -43,11 +53,17 @@ const showNewCert = Boolean(newestCert && isNew(new Date(newestCert.earned)));
             const isExternal = Boolean(cert.credentialUrl);
             return (
               <a
-                class:list={['cert-card', { 'is-new': isLatest }]}
-                href={cert.credentialUrl || '/about'}
-                {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                class:list={["cert-card", { "is-new": isLatest }]}
+                href={cert.credentialUrl || "/about"}
+                {...(isExternal
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
               >
-                {isLatest && <span class="new-badge" aria-label="Newly added">New</span>}
+                {isLatest && (
+                  <span class="new-badge" aria-label="Newly added">
+                    New
+                  </span>
+                )}
                 {cert.badgeUrl && (
                   <img
                     class="cert-badge"
@@ -62,7 +78,7 @@ const showNewCert = Boolean(newestCert && isNew(new Date(newestCert.earned)));
                   <span class="cert-status">{cert.status}</span>
                   <strong>{cert.name}</strong>
                   <span class="issuer">
-                    {[cert.issuer, cert.code].filter(Boolean).join(' · ')}
+                    {[cert.issuer, cert.code].filter(Boolean).join(" · ")}
                   </span>
                 </div>
               </a>

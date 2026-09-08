@@ -11,28 +11,53 @@ const certs = loadCertifications().sort((a, b) => {
 
 <BaseLayout
   title="About"
-  description="About Ben Roberts — Azure identity, automation, and security engineer."
+  description="About Ben Roberts: Cloud engineer specializing in Azure identity security, Entra, and automation."
   current="about"
   geo="full"
 >
   <p class="eyebrow">About</p>
   <h1 class="page-title">Ben Roberts</h1>
-  <p class="lede">
-    A blog for all things Azure! Whether you're a developer or IT pro, explore
-    tips, trends, and hands-on guides to optimize and transform your workflow
-    with Microsoft Azure's powerful capabilities. Join me while I learn new
-    features and technologies from code to infrastructure.
-    <br />
-    <br />
-    I write about Azure, Entra, Identity Security, Python, PowerShell, and the infrastructure
-    patterns that keep labs disposable and production systems honest.
-    <br />
-    <br />
-    Advanced engineering at the intersection of Cloud Architecture, Identity Security,
-    and AI Automation. Explore deep-dives, hands-on architecture guides, and custom
-    tooling designed to secure and automate the enterprise. My goal is to help you
-    build secure, scalable, and efficient systems.
-  </p>
+  <div class="about-bio">
+    <p>
+      Hi, I'm Ben. I'm a cloud engineer specializing in Identity Security and
+      Access Management (IAM), mainly across the Microsoft cloud ecosystem. If I
+      had to pick my single greatest skill, it's learning. I love diving into
+      complex, unfamiliar systems, breaking them down in disposable labs, and
+      figuring out how things actually tick under the hood. For me, staying
+      sharp isn't about collecting badges or buzzwords. It's about an active
+      curiosity to keep learning, adapting, and finding cleaner ways to solve
+      hard engineering problems.
+    </p>
+    <p>
+      Over the years, I've designed and rolled out critical identity and
+      security infrastructure across public and private clouds. My day-to-day
+      focus centers on Microsoft Entra ID for identity governance and lifecycle
+      management: things like Conditional Access, Privileged Identity Management
+      (PIM), RBAC, modern MFA, and self-service password reset. Lately, that's
+      meant building out Entra Access Packages and Event-Driven Automation with
+      PowerShell Function Apps for Entitlement Management, plus driving the
+      adoption of Managed Identities and workload federation so we can eliminate
+      long-lived client secrets for good.
+    </p>
+    <p>
+      I believe good security has to be automated to be sustainable. I treat
+      infrastructure as code using Bicep and Terraform, build CI/CD pipelines in
+      Azure DevOps and GitHub Actions, and rely heavily on PowerShell and Python
+      for custom tooling, testing, and Graph automation. I also work with
+      container orchestration in Kubernetes and Helm, and implement practical
+      defense with Bastion, Defender for Identity, and Just-In-Time access. A
+      big part of what I enjoy is bridging the gap between high-level designs
+      and working systems: translating strict security baselines into reliable
+      code that teams actually enjoy using.
+    </p>
+    <p>
+      This site is where I share what I'm learning along the way. In my posts,
+      you'll find honest walkthroughs, disposable lab setups, and practical
+      fixes for the messy edge cases that official documentation tends to skip.
+      When I'm not testing something new in a lab, I'm studying for a new
+      certifications or renewal.
+    </p>
+  </div>
 
   <section class="section reveal">
     <div class="section-head">
@@ -52,13 +77,21 @@ const certs = loadCertifications().sort((a, b) => {
             : {};
           const expiredDate = cert.expired || cert.expires;
           return (
-            <Tag class:list={["cert-card", { "is-expert": isExpert }]} {...attrs}>
+            <Tag
+              class:list={["cert-card", { "is-expert": isExpert }]}
+              {...attrs}
+            >
               {isExpert && (
-                <span class="expert-badge" aria-label="Expert level certification">
+                <span
+                  class="expert-badge"
+                  aria-label="Expert level certification"
+                >
                   Expert
                 </span>
               )}
-              {isExpert && <span class="cert-expert-sheen" aria-hidden="true" />}
+              {isExpert && (
+                <span class="cert-expert-sheen" aria-hidden="true" />
+              )}
               {cert.badgeUrl && (
                 <img
                   class="cert-badge"
@@ -80,22 +113,20 @@ const certs = loadCertifications().sort((a, b) => {
                   {[cert.issuer, cert.code].filter(Boolean).join(" · ")}
                 </span>
                 <span class="meta">
-                  {
-                    cert.status === "inactive" ? (
-                      expiredDate ? (
-                        `Expired ${formatDate(new Date(expiredDate))}`
-                      ) : (
-                        `Earned ${formatDate(new Date(cert.earned))}`
-                      )
+                  {cert.status === "inactive" ? (
+                    expiredDate ? (
+                      `Expired ${formatDate(new Date(expiredDate))}`
                     ) : (
-                      <>
-                        Earned {formatDate(new Date(cert.earned))}
-                        {cert.expires
-                          ? ` · Expires ${formatDate(new Date(cert.expires))}`
-                          : ""}
-                      </>
+                      `Earned ${formatDate(new Date(cert.earned))}`
                     )
-                  }
+                  ) : (
+                    <>
+                      Earned {formatDate(new Date(cert.earned))}
+                      {cert.expires
+                        ? ` · Expires ${formatDate(new Date(cert.expires))}`
+                        : ""}
+                    </>
+                  )}
                 </span>
               </div>
             </Tag>
@@ -104,4 +135,22 @@ const certs = loadCertifications().sort((a, b) => {
       }
     </div>
   </section>
+
+  <style>
+    .about-bio {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      max-width: 44rem;
+      margin: 0 0 2.5rem;
+    }
+
+    .about-bio p {
+      margin: 0 0 1.25rem;
+    }
+
+    .about-bio p:last-child {
+      margin-bottom: 0;
+    }
+  </style>
 </BaseLayout>
