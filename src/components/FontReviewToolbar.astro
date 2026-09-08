@@ -1,0 +1,249 @@
+---
+// FontReviewToolbar.astro — allows live review of all three modern dark font pairs
+---
+
+<aside class="font-toolbar" id="font-review-toolbar" aria-label="Font pair review toolbar">
+  <div class="font-toolbar-inner">
+    <div class="font-toolbar-header">
+      <span class="font-toolbar-label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="4 7 4 4 20 4 20 7"></polyline>
+          <line x1="9" y1="20" x2="15" y2="20"></line>
+          <line x1="12" y1="4" x2="12" y2="20"></line>
+        </svg>
+        Font Pair Review
+      </span>
+      <button class="font-toolbar-minimize" id="font-toolbar-toggle" type="button" aria-expanded="true" aria-controls="font-toolbar-options" title="Collapse font toolbar">
+        <span class="sr-only">Toggle font toolbar</span>
+        <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <div class="font-toolbar-options" id="font-toolbar-options">
+      <button
+        type="button"
+        class="font-option-btn is-active"
+        data-pair="jakarta"
+        title="Pair 2: Plus Jakarta Sans (Warm Geometric) + JetBrains Mono"
+      >
+        <span class="font-opt-title">Jakarta + JetBrains</span>
+        <span class="font-opt-badge">Recommended</span>
+      </button>
+
+      <button
+        type="button"
+        class="font-option-btn"
+        data-pair="geist"
+        title="Pair 1: Geist Sans + Geist Mono (Swiss Geometric Developer Standard)"
+      >
+        <span class="font-opt-title">Geist + Geist Mono</span>
+        <span class="font-opt-sub">Vercel Swiss</span>
+      </button>
+
+      <button
+        type="button"
+        class="font-option-btn"
+        data-pair="sora"
+        title="Pair 3: Sora (Futuristic Flared Sans) + Geist Mono"
+      >
+        <span class="font-opt-title">Sora + Geist Mono</span>
+        <span class="font-opt-sub">Distinctive</span>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .font-toolbar {
+    position: fixed;
+    bottom: 3.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    width: min(calc(100% - 2rem), 42rem);
+    pointer-events: none;
+    font-family: var(--font-sans);
+  }
+
+  .font-toolbar-inner {
+    pointer-events: auto;
+    background: rgba(16, 18, 24, 0.92);
+    border: 1px solid rgba(61, 214, 245, 0.25);
+    border-radius: 8px;
+    box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.7), 0 0 16px -2px rgba(61, 214, 245, 0.15);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 0.6rem 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+  }
+
+  .font-toolbar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .font-toolbar-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .font-toolbar-minimize {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+
+  .font-toolbar-minimize:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .font-toolbar.is-collapsed .font-toolbar-options {
+    display: none;
+  }
+
+  .font-toolbar.is-collapsed .chevron-icon {
+    transform: rotate(180deg);
+  }
+
+  .font-toolbar-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+  }
+
+  @media (max-width: 640px) {
+    .font-toolbar-options {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .font-option-btn {
+    appearance: none;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    padding: 0.45rem 0.6rem;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    transition: all 0.15s ease;
+    color: var(--text-muted);
+  }
+
+  .font-option-btn:hover {
+    background: rgba(61, 214, 245, 0.06);
+    border-color: rgba(61, 214, 245, 0.3);
+    color: var(--text);
+  }
+
+  .font-option-btn.is-active {
+    background: rgba(61, 214, 245, 0.12);
+    border-color: rgba(61, 214, 245, 0.6);
+    color: var(--text);
+    box-shadow: 0 0 12px -2px rgba(61, 214, 245, 0.25);
+  }
+
+  .font-opt-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .font-option-btn.is-active .font-opt-title {
+    color: #fff;
+  }
+
+  .font-opt-badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #3dd6f5;
+    font-weight: 700;
+  }
+
+  .font-opt-sub {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+</style>
+
+<script>
+  function setupFontToolbar() {
+    const toolbar = document.getElementById('font-review-toolbar');
+    const toggle = document.getElementById('font-toolbar-toggle');
+    if (!toolbar) return;
+
+    // Restore active pair from dataset or localStorage
+    const currentPair = document.documentElement.dataset.fontPair || 'jakarta';
+    const buttons = toolbar.querySelectorAll<HTMLButtonElement>('.font-option-btn');
+
+    function updateActiveButton(pair: string) {
+      buttons.forEach((btn) => {
+        if (btn.dataset.pair === pair) {
+          btn.classList.add('is-active');
+          btn.setAttribute('aria-pressed', 'true');
+        } else {
+          btn.classList.remove('is-active');
+          btn.setAttribute('aria-pressed', 'false');
+        }
+      });
+    }
+
+    updateActiveButton(currentPair);
+
+    buttons.forEach((btn) => {
+      btn.onclick = () => {
+        const pair = btn.dataset.pair || 'jakarta';
+        document.documentElement.dataset.fontPair = pair;
+        localStorage.setItem('preview-font-pair', pair);
+        updateActiveButton(pair);
+      };
+    });
+
+    if (toggle) {
+      toggle.onclick = () => {
+        const collapsed = toolbar.classList.toggle('is-collapsed');
+        toggle.setAttribute('aria-expanded', String(!collapsed));
+        localStorage.setItem('preview-font-toolbar-collapsed', String(collapsed));
+      };
+      if (localStorage.getItem('preview-font-toolbar-collapsed') === 'true') {
+        toolbar.classList.add('is-collapsed');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    }
+  }
+
+  document.addEventListener('astro:page-load', setupFontToolbar);
+  setupFontToolbar();
+</script>

@@ -9,8 +9,9 @@
   --accent-dim: rgba(61, 214, 245, 0.14);
   --cert-active: #e8b84a;
   --code-bg: #0c0e14;
-  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", "Cascadia Code", "Consolas", monospace;
+  /* Default Pair: Plus Jakarta Sans + JetBrains Mono (Pair 2: Warm, human, anti-AI feel) */
+  --font-sans: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Code", "Consolas", monospace;
   --measure: 68ch;
   --radius: 4px;
   --nav-h: 3.5rem;
@@ -18,6 +19,22 @@
   --dur: 320ms;
   --space: clamp(1rem, 3vw, 1.75rem);
   --max: 72rem;
+}
+
+/* Three researched sans+mono pairings for live review */
+html[data-font-pair="jakarta"] {
+  --font-sans: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Code", "Consolas", monospace;
+}
+
+html[data-font-pair="geist"] {
+  --font-sans: "Geist Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", "Cascadia Code", "Consolas", monospace;
+}
+
+html[data-font-pair="sora"] {
+  --font-sans: "Sora", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", "Cascadia Code", "Consolas", monospace;
 }
 
 *,
@@ -612,6 +629,7 @@ a:hover {
 .prose pre {
   overflow-x: auto;
   margin: 0 0 1.35rem;
+  font-family: var(--font-mono);
 }
 
 .prose pre code {
