@@ -9,8 +9,8 @@
   --accent-dim: rgba(61, 214, 245, 0.14);
   --cert-active: #e8b84a;
   --code-bg: #0c0e14;
-  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", "Cascadia Code", "Consolas", monospace;
+  --font-sans: "Sora", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", "Cascadia Code", "Consolas", monospace;
   --measure: 68ch;
   --radius: 4px;
   --nav-h: 3.5rem;
@@ -612,6 +612,7 @@ a:hover {
 .prose pre {
   overflow-x: auto;
   margin: 0 0 1.35rem;
+  font-family: var(--font-mono);
 }
 
 .prose pre code {
