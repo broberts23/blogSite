@@ -34,7 +34,7 @@ const {
   showProgress = false,
 } = Astro.props;
 
-const pageTitle = title === 'Ben Roberts' ? 'Ben Roberts — Azure & Identity' : `${title} · benroberts.io`;
+const pageTitle = title === 'Ben Roberts' ? 'Ben Roberts - Azure & Identity Security' : `${title} · benroberts.io`;
 const ogImageUrl = image
   ? new URL(typeof image === 'string' ? image : image.src, Astro.site || 'https://benroberts.io').toString()
   : null;
@@ -50,17 +50,19 @@ const ogImageUrl = image
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#07080c" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="alternate" type="application/rss+xml" title="benroberts.io" href="/rss.xml" />
     <title>{pageTitle}</title>
 
     <!-- Open Graph / Twitter -->
-    <meta property="og:title" content={title === 'Ben Roberts' ? 'Ben Roberts — Azure & Identity' : title} />
+    <meta property="og:title" content={title === 'Ben Roberts' ? 'Ben Roberts - Azure & Identity Security' : title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={density === 'article' ? 'article' : 'website'} />
     <meta property="og:url" content={Astro.url.href} />
     {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
     <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
-    <meta name="twitter:title" content={title === 'Ben Roberts' ? 'Ben Roberts — Azure & Identity' : title} />
+    <meta name="twitter:title" content={title === 'Ben Roberts' ? 'Ben Roberts - Azure & Identity Security' : title} />
     <meta name="twitter:description" content={description} />
     {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
 
@@ -77,7 +79,17 @@ const ogImageUrl = image
       </main>
       <footer class="site-footer">
         <div class="site-footer-inner">
-          <span>© {new Date().getFullYear()} Ben Roberts</span>
+          <span class="footer-copy">© {new Date().getFullYear()} Ben Roberts</span>
+          <a class="footer-brand" href="/" aria-label="Ben Roberts - Home">
+            <img
+              src="/logo.png"
+              alt="Ben Roberts cloud and automation symbol"
+              class="footer-logo"
+              width="64"
+              height="35"
+              loading="lazy"
+            />
+          </a>
           <nav class="site-footer-links" aria-label="Social and feeds">
             <a href="/rss.xml" aria-label="RSS Feed" title="RSS Feed">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false">
