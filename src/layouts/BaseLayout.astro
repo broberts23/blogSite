@@ -1,28 +1,15 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 import type { ImageMetadata } from 'astro';
-/* Pair 1: Geist Sans + Geist Mono */
-import '@fontsource/geist-sans/400.css';
-import '@fontsource/geist-sans/500.css';
-import '@fontsource/geist-sans/600.css';
-import '@fontsource/geist-mono/400.css';
-import '@fontsource/geist-mono/500.css';
-
-/* Pair 2 (Default): Plus Jakarta Sans + JetBrains Mono */
-import '@fontsource/plus-jakarta-sans/400.css';
-import '@fontsource/plus-jakarta-sans/500.css';
-import '@fontsource/plus-jakarta-sans/600.css';
-import '@fontsource/jetbrains-mono/400.css';
-import '@fontsource/jetbrains-mono/500.css';
-
-/* Pair 3: Sora (+ Geist Mono) */
 import '@fontsource/sora/400.css';
 import '@fontsource/sora/500.css';
 import '@fontsource/sora/600.css';
-
+import '@fontsource/sora/700.css';
+import '@fontsource/geist-mono/400.css';
+import '@fontsource/geist-mono/500.css';
+import '@fontsource/geist-mono/600.css';
 import GeometricField from '../components/GeometricField.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import FontReviewToolbar from '../components/FontReviewToolbar.astro';
 import '../styles/global.css';
 import '../styles/geo.css';
 import '../styles/nav.css';
@@ -77,18 +64,6 @@ const ogImageUrl = image
     <meta name="twitter:description" content={description} />
     {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
 
-    <script is:inline>
-      (() => {
-        const applyFont = () => {
-          const saved = localStorage.getItem('preview-font-pair');
-          if (saved) {
-            document.documentElement.dataset.fontPair = saved;
-          }
-        };
-        applyFont();
-        document.addEventListener('astro:after-swap', applyFont);
-      })();
-    </script>
     <ClientRouter />
   </head>
   <body>
@@ -131,6 +106,5 @@ const ogImageUrl = image
         </div>
       </footer>
     </div>
-    <FontReviewToolbar />
   </body>
 </html>
