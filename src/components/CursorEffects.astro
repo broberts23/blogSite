@@ -1,0 +1,305 @@
+---
+---
+
+<div class="cursor-fx" transition:persist="cursor-fx" aria-hidden="true">
+  <canvas></canvas>
+</div>
+
+<style>
+  .cursor-fx {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .cursor-fx canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    /* lighter keeps hue better than screen on overlapping pastels */
+    mix-blend-mode: lighter;
+  }
+</style>
+
+<script>
+  type Particle = {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    life: number;
+    maxLife: number;
+    size: number;
+    color: string;
+  };
+  type Ripple = { x: number; y: number; t0: number; outer: string; inner: string };
+
+  const MAX_PARTICLES = 160;
+  const LIFE_MIN = 450;
+  const LIFE_MAX = 650;
+  const RIPPLE_MS = 600;
+  const RIPPLE_COOLDOWN = 600;
+  const RIPPLE_MAX_R = 200;
+  // Mid-tone neons (not pastel) so overlaps stay chromatic, not white
+  const PALETTE = ['#00d4ff', '#00e887', '#ffb020', '#a855f7'];
+
+  let initialized = false;
+
+  function canRun(): boolean {
+    return window.matchMedia(
+      '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)',
+    ).matches;
+  }
+
+  function paletteIndex(x: number, y: number): number {
+    let h = (Math.floor(x) * 73856093) ^ (Math.floor(y) * 19349663);
+    h = (h >>> 0) % PALETTE.length;
+    // Bias toward cyan/green; purple only sparsely
+    if (h === 3 && ((Math.floor(x) + Math.floor(y)) & 3) !== 0) h = 0;
+    return h;
+  }
+
+  function pickColor(x: number, y: number): string {
+    return PALETTE[paletteIndex(x, y)];
+  }
+
+  function hexToRgb(hex: string): [number, number, number] {
+    const n = parseInt(hex.slice(1), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+
+  function boot() {
+    if (initialized) return;
+    if (!canRun()) return;
+
+    const root = document.querySelector('.cursor-fx');
+    const canvas = root?.querySelector('canvas');
+    if (!root || !canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    initialized = true;
+
+    const particles: Particle[] = [];
+    const ripples: Ripple[] = [];
+    let lastRipple = 0;
+    let raf = 0;
+    let lastX = -1;
+    let lastY = -1;
+    let lastFrame = 0;
+    let dpr = 1;
+    let hasPrev = false;
+
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      canvas!.width = Math.floor(w * dpr);
+      canvas!.height = Math.floor(h * dpr);
+      canvas!.style.width = `${w}px`;
+      canvas!.style.height = `${h}px`;
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function ensureLoop() {
+      if (!raf && !document.hidden) raf = requestAnimationFrame(frame);
+    }
+
+    function stopLoop() {
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    }
+
+    function pushParticle(p: Particle) {
+      if (particles.length >= MAX_PARTICLES) {
+        let worst = 0;
+        let worstLife = Infinity;
+        for (let i = 0; i < particles.length; i++) {
+          if (particles[i].life < worstLife) {
+            worstLife = particles[i].life;
+            worst = i;
+          }
+        }
+        particles[worst] = p;
+      } else {
+        particles.push(p);
+      }
+    }
+
+    function spawnAt(x: number, y: number, dx: number, dy: number, burst = false) {
+      const dist = Math.hypot(dx, dy) || 1;
+      const nx = dx / dist;
+      const ny = dy / dist;
+
+      // Comet: denser spawn, slight backward velocity, tapering size
+      const count = burst ? 10 : 4 + Math.floor(Math.min(dist / 8, 4));
+      for (let i = 0; i < count; i++) {
+        const life = LIFE_MIN + Math.random() * (LIFE_MAX - LIFE_MIN);
+        const along = (i / count) * Math.min(dist, 28);
+        const side = (Math.random() - 0.5) * 6;
+        const px = x - nx * along + -ny * side;
+        const py = y - ny * along + nx * side;
+        const speed = 0.4 + Math.random() * 0.7;
+        pushParticle({
+          x: px,
+          y: py,
+          vx: -nx * speed + (Math.random() - 0.5) * 0.2,
+          vy: -ny * speed + (Math.random() - 0.5) * 0.2,
+          life,
+          maxLife: life,
+          size: burst ? 7 + Math.random() * 5 : 4 + Math.random() * 6,
+          color: pickColor(px, py),
+        });
+      }
+    }
+
+    function spawnAlong(x0: number, y0: number, x1: number, y1: number) {
+      const dx = x1 - x0;
+      const dy = y1 - y0;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 0.5) {
+        spawnAt(x1, y1, dx || 1, dy || 0);
+        return;
+      }
+      const steps = Math.max(1, Math.ceil(dist / 10));
+      for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        spawnAt(x0 + dx * t, y0 + dy * t, dx, dy);
+      }
+    }
+
+    function onMove(e: PointerEvent) {
+      if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+      const x = e.clientX;
+      const y = e.clientY;
+      if (x === lastX && y === lastY) return;
+      if (hasPrev) {
+        spawnAlong(lastX, lastY, x, y);
+      } else {
+        spawnAt(x, y, 1, 0);
+        hasPrev = true;
+      }
+      lastX = x;
+      lastY = y;
+      ensureLoop();
+    }
+
+    function onDown(e: PointerEvent) {
+      if (e.button !== 0) return;
+      if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+      const now = performance.now();
+      if (now - lastRipple < RIPPLE_COOLDOWN) return;
+      lastRipple = now;
+      const oi = paletteIndex(e.clientX, e.clientY);
+      const ii = (oi + 1) % PALETTE.length;
+      ripples.push({
+        x: e.clientX,
+        y: e.clientY,
+        t0: now,
+        outer: PALETTE[oi],
+        inner: PALETTE[ii],
+      });
+      spawnAt(e.clientX, e.clientY, 0, -1, true);
+      ensureLoop();
+    }
+
+    function drawParticle(p: Particle) {
+      const t = Math.max(0, p.life / p.maxLife);
+      const sizeMul = 0.35 + 0.65 * t;
+      const alpha = Math.min(1, t * 0.75 + 0.2);
+      const radius = p.size * sizeMul;
+      if (radius < 0.4 || alpha < 0.02) return;
+
+      const [r, g, b] = hexToRgb(p.color);
+      // Tight saturated core + colored halo — avoid a white hotspot
+      const grad = ctx!.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius);
+      grad.addColorStop(0, `rgba(${r},${g},${b},${alpha})`);
+      grad.addColorStop(0.35, `rgba(${r},${g},${b},${alpha * 0.7})`);
+      grad.addColorStop(0.7, `rgba(${r},${g},${b},${alpha * 0.25})`);
+      grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+      ctx!.fillStyle = grad;
+      ctx!.beginPath();
+      ctx!.arc(p.x, p.y, radius, 0, Math.PI * 2);
+      ctx!.fill();
+    }
+
+    function frame(now: number) {
+      raf = 0;
+      const dt = lastFrame ? Math.min(now - lastFrame, 40) : 16.7;
+      lastFrame = now;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      ctx!.clearRect(0, 0, w, h);
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.life -= dt;
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+        p.x += p.vx * (dt / 16.7);
+        p.y += p.vy * (dt / 16.7);
+        drawParticle(p);
+      }
+
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const rip = ripples[i];
+        const elapsed = now - rip.t0;
+        if (elapsed >= RIPPLE_MS) {
+          ripples.splice(i, 1);
+          continue;
+        }
+        const p = elapsed / RIPPLE_MS;
+        const radius = RIPPLE_MAX_R * (0.15 + 0.85 * p);
+        const alpha = (1 - p) * 0.85;
+        const [or, og, ob] = hexToRgb(rip.outer);
+        ctx!.beginPath();
+        ctx!.arc(rip.x, rip.y, radius, 0, Math.PI * 2);
+        ctx!.strokeStyle = `rgba(${or},${og},${ob},${alpha})`;
+        ctx!.lineWidth = 2.5 * (1 - p * 0.4);
+        ctx!.stroke();
+
+        if (p > 0.12) {
+          const p2 = (p - 0.12) / 0.88;
+          const r2 = RIPPLE_MAX_R * 0.7 * p2;
+          const [ir, ig, ib] = hexToRgb(rip.inner);
+          ctx!.beginPath();
+          ctx!.arc(rip.x, rip.y, r2, 0, Math.PI * 2);
+          ctx!.strokeStyle = `rgba(${ir},${ig},${ib},${(1 - p2) * 0.65})`;
+          ctx!.lineWidth = 1.5;
+          ctx!.stroke();
+        }
+      }
+
+      if (particles.length > 0 || ripples.length > 0) {
+        ensureLoop();
+      } else {
+        lastFrame = 0;
+      }
+    }
+
+    function onVisibility() {
+      if (document.hidden) {
+        stopLoop();
+        lastFrame = 0;
+      } else if (particles.length > 0 || ripples.length > 0) {
+        ensureLoop();
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+    window.addEventListener('pointermove', onMove, { passive: true });
+    window.addEventListener('pointerdown', onDown, { passive: true });
+    document.addEventListener('visibilitychange', onVisibility);
+  }
+
+  document.addEventListener('astro:page-load', boot);
+  boot();
+</script>

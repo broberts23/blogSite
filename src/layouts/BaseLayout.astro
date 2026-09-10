@@ -9,6 +9,7 @@ import '@fontsource/geist-mono/400.css';
 import '@fontsource/geist-mono/500.css';
 import '@fontsource/geist-mono/600.css';
 import GeometricField from '../components/GeometricField.astro';
+import CursorEffects from '../components/CursorEffects.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import '../styles/global.css';
 import '../styles/geo.css';
@@ -70,6 +71,7 @@ const ogImageUrl = image
   </head>
   <body>
     <GeometricField intensity={geo} />
+    <CursorEffects />
     <div class="site-shell">
       <SiteHeader current={current} showProgress={showProgress} />
       <main class="site-main" data-density={density} data-pagefind-body>
