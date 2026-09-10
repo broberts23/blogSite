@@ -42,8 +42,8 @@
   const RIPPLE_MS = 600;
   const RIPPLE_COOLDOWN = 600;
   const RIPPLE_MAX_R = 200;
-  // Mid-tone neons (not pastel) so overlaps stay chromatic, not white
-  const PALETTE = ['#00d4ff', '#00e887', '#ffb020', '#a855f7'];
+  // Electric neons — gold held on the yellow side (not orange-red)
+  const PALETTE = ['#00f0ff', '#00ff6a', '#ffdf00', '#e040fb'];
 
   let initialized = false;
 
@@ -152,7 +152,7 @@
           vy: -ny * speed + (Math.random() - 0.5) * 0.2,
           life,
           maxLife: life,
-          size: burst ? 7 + Math.random() * 5 : 4 + Math.random() * 6,
+          size: burst ? 8 + Math.random() * 6 : 5 + Math.random() * 7,
           color: pickColor(px, py),
         });
       }
@@ -210,22 +210,35 @@
 
     function drawParticle(p: Particle) {
       const t = Math.max(0, p.life / p.maxLife);
-      const sizeMul = 0.35 + 0.65 * t;
-      const alpha = Math.min(1, t * 0.75 + 0.2);
+      const sizeMul = 0.4 + 0.7 * t;
+      // Hold opacity longer so mid-tail stays neon, not washed out
+      const alpha = Math.min(1, t * 0.55 + 0.45);
       const radius = p.size * sizeMul;
       if (radius < 0.4 || alpha < 0.02) return;
 
       const [r, g, b] = hexToRgb(p.color);
-      // Tight saturated core + colored halo — avoid a white hotspot
+      // Saturated core + vivid mid ring + soft colored halo
       const grad = ctx!.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius);
       grad.addColorStop(0, `rgba(${r},${g},${b},${alpha})`);
-      grad.addColorStop(0.35, `rgba(${r},${g},${b},${alpha * 0.7})`);
-      grad.addColorStop(0.7, `rgba(${r},${g},${b},${alpha * 0.25})`);
+      grad.addColorStop(0.25, `rgba(${r},${g},${b},${alpha * 0.95})`);
+      grad.addColorStop(0.55, `rgba(${r},${g},${b},${alpha * 0.55})`);
       grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
       ctx!.fillStyle = grad;
       ctx!.beginPath();
       ctx!.arc(p.x, p.y, radius, 0, Math.PI * 2);
       ctx!.fill();
+
+      // Hot secondary core — packs more chroma into the head of each spark
+      const coreR = radius * 0.35;
+      if (coreR > 0.6) {
+        const core = ctx!.createRadialGradient(p.x, p.y, 0, p.x, p.y, coreR);
+        core.addColorStop(0, `rgba(${r},${g},${b},${Math.min(1, alpha + 0.15)})`);
+        core.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        ctx!.fillStyle = core;
+        ctx!.beginPath();
+        ctx!.arc(p.x, p.y, coreR, 0, Math.PI * 2);
+        ctx!.fill();
+      }
     }
 
     function frame(now: number) {
@@ -257,12 +270,12 @@
         }
         const p = elapsed / RIPPLE_MS;
         const radius = RIPPLE_MAX_R * (0.15 + 0.85 * p);
-        const alpha = (1 - p) * 0.85;
+        const alpha = (1 - p) * 0.95;
         const [or, og, ob] = hexToRgb(rip.outer);
         ctx!.beginPath();
         ctx!.arc(rip.x, rip.y, radius, 0, Math.PI * 2);
         ctx!.strokeStyle = `rgba(${or},${og},${ob},${alpha})`;
-        ctx!.lineWidth = 2.5 * (1 - p * 0.4);
+        ctx!.lineWidth = 3 * (1 - p * 0.35);
         ctx!.stroke();
 
         if (p > 0.12) {
@@ -271,8 +284,8 @@
           const [ir, ig, ib] = hexToRgb(rip.inner);
           ctx!.beginPath();
           ctx!.arc(rip.x, rip.y, r2, 0, Math.PI * 2);
-          ctx!.strokeStyle = `rgba(${ir},${ig},${ib},${(1 - p2) * 0.65})`;
-          ctx!.lineWidth = 1.5;
+          ctx!.strokeStyle = `rgba(${ir},${ig},${ib},${(1 - p2) * 0.8})`;
+          ctx!.lineWidth = 2;
           ctx!.stroke();
         }
       }
