@@ -42,9 +42,9 @@
   const RIPPLE_MS = 600;
   const RIPPLE_COOLDOWN = 600;
   const RIPPLE_MAX_R = 200;
-  // Electric neons — gold held on the yellow side (not orange-red)
-  const PALETTE = ['#00f0ff', '#00ff6a', '#ffdf00', '#e040fb'];
-
+  // Cyan/aqua-led neons; gold + magenta as sparse accents
+  // const PALETTE = ['#00f0ff', '#38bdf8', '#00ff6a', '#ffdf00', '#e040fb'];
+  const PALETTE = ['#00f0ff', '#38bdf8', '#36C9B8', '#F3F490', '#C675D1'];
   let initialized = false;
 
   function canRun(): boolean {
@@ -56,8 +56,10 @@
   function paletteIndex(x: number, y: number): number {
     let h = (Math.floor(x) * 73856093) ^ (Math.floor(y) * 19349663);
     h = (h >>> 0) % PALETTE.length;
-    // Bias toward cyan/green; purple only sparsely
-    if (h === 3 && ((Math.floor(x) + Math.floor(y)) & 3) !== 0) h = 0;
+    // Bias hard toward cyan / sky / green; gold (3) & magenta (4) sparsely
+    if ((h === 3 || h === 4) && ((Math.floor(x) + Math.floor(y)) & 3) !== 0) {
+      h = (Math.floor(x) + Math.floor(y)) & 1; // flip between cyan and sky
+    }
     return h;
   }
 
