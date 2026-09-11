@@ -217,7 +217,7 @@
   status: active
   credentialUrl: "https://www.credly.com/earner/earned/badge/0bde739f-9cfb-45fb-a743-8b5f32a9f1b8"
 
-- name: "Associate Cloud Engineer Certification"
+- name: "Associate Cloud Engineer"
   code: GCP-ACE
   badgeUrl: "https://images.credly.com/size/680x680/images/08096465-cbfc-4c3e-93e5-93c5aa61f23e/image.png"
   issuer: "Google Cloud"
