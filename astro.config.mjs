@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import rehypeExternalLinks from 'rehype-external-links';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 
 const sanitizeOptions = {
@@ -41,7 +42,14 @@ export default defineConfig({
     },
   },
   markdown: {
-    rehypePlugins: [[rehypeSanitize, sanitizeOptions]],
+    // Sanitize first, then add target/rel so they are not stripped.
+    rehypePlugins: [
+      [rehypeSanitize, sanitizeOptions],
+      [
+        rehypeExternalLinks,
+        { target: '_blank', rel: ['noopener', 'noreferrer'] },
+      ],
+    ],
     syntaxHighlight: 'shiki',
     shikiConfig: {
       theme: 'github-dark-dimmed',
