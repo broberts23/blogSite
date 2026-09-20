@@ -20,6 +20,7 @@
     "astro": "^7.3.1",
     "js-yaml": "^4.1.0",
     "pagefind": "^1.4.0",
+    "rehype-external-links": "^3.0.0",
     "rehype-sanitize": "^6.0.0"
   },
   "devDependencies": {
