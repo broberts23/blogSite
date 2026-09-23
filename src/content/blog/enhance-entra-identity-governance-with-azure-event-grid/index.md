@@ -66,22 +66,22 @@ Here’s the complete flow at a glance. I’ll walk it left-to-right in the next
 
 ```mermaid
 flowchart LR
-  Graph[Microsoft Graph<br>change notifications] -->|Partner Events| PC[Event Grid<br>Partner Configuration]
-  PC --> PT[Event Grid<br>Partner Topic]
+  Graph["Microsoft Graph<br>change notifications"] -->|Partner Events| PC["Event Grid<br>Partner Configuration"]
+  PC --> PT["Event Grid<br>Partner Topic"]
 
-  PT --> ES[Event Subscription<br>CloudEvents 1.0]
-  ES -->|invoke| GEH[Azure Function<br>**GovernanceEventHandler**]
+  PT --> ES["Event Subscription<br>CloudEvents 1.0"]
+  ES -->|invoke| GEH["`Azure Function<br>**GovernanceEventHandler**`"]
 
-  GEH -->|dedupe key| Dedupe[Table Storage<br>**DedupeKeys**]
-  GEH -->|enqueue| WorkQ[Storage Queue<br>**workitems**]
-  GEH -->|enqueue lifecycle| LifeQ[Storage Queue<br>**lifecycle**]
+  GEH -->|dedupe key| Dedupe["`Table Storage<br>**DedupeKeys**`"]
+  GEH -->|enqueue| WorkQ["`Storage Queue<br>**workitems**`"]
+  GEH -->|enqueue lifecycle| LifeQ["`Storage Queue<br>**lifecycle**`"]
 
-  WorkQ --> BW[Azure Function<br>**BirthrightWorker**]
-  LifeQ --> SLW[Azure Function<br>**SubscriptionLifecycleWorker**<br>reauthorize + renew]
+  WorkQ --> BW["`Azure Function<br>**BirthrightWorker**`"]
+  LifeQ --> SLW["`Azure Function<br>**SubscriptionLifecycleWorker**<br>reauthorize + renew`"]
 
-  ES -->|dead-letter| DL[Blob Storage<br>**dead-letter** container]
+  ES -->|dead-letter| DL["`Blob Storage<br>**dead-letter** container`"]
 
-  UAMI[User-assigned<br>managed identity] --> GEH
+  UAMI["User-assigned<br>managed identity"] --> GEH
   UAMI --> BW
   UAMI --> SLW
   UAMI --> Dedupe

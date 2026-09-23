@@ -96,6 +96,344 @@ const transitionName = `hero-${slug.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
   </article>
 </BaseLayout>
 
+<script>
+  let mermaidReady = false;
+
+  const MERMAID_PAD = 12;
+  const MERMAID_MAX_SCALE = 2.5;
+  const MERMAID_ZOOM_STEP = 1.2;
+  const MERMAID_PAN_STEP = 48;
+
+  function parseViewBox(svg: SVGSVGElement): { width: number; height: number } | null {
+    const vb = svg.getAttribute('viewBox');
+    if (vb) {
+      const parts = vb.trim().split(/[\s,]+/).map(Number);
+      if (parts.length === 4 && parts.every((n) => Number.isFinite(n)) && parts[2] > 0 && parts[3] > 0) {
+        return { width: parts[2], height: parts[3] };
+      }
+    }
+
+    const attrW = parseFloat(svg.getAttribute('width') ?? '');
+    const attrH = parseFloat(svg.getAttribute('height') ?? '');
+    if (Number.isFinite(attrW) && Number.isFinite(attrH) && attrW > 0 && attrH > 0) {
+      return { width: attrW, height: attrH };
+    }
+
+    return null;
+  }
+
+  function sizeMermaidSvg(svg: SVGSVGElement): { width: number; height: number } | null {
+    const size = parseViewBox(svg);
+    if (!size) return null;
+
+    svg.setAttribute('width', String(size.width));
+    svg.setAttribute('height', String(size.height));
+    svg.style.width = `${size.width}px`;
+    svg.style.height = `${size.height}px`;
+    svg.style.maxWidth = 'none';
+    return size;
+  }
+
+  function enhanceMermaidDiagram(pre: HTMLElement) {
+    if (pre.classList.contains('mermaid-error')) return;
+    if (pre.closest('.mermaid-viewport')) return;
+
+    const svg = pre.querySelector('svg');
+    if (!(svg instanceof SVGSVGElement)) return;
+
+    const sized = sizeMermaidSvg(svg);
+    if (!sized) return;
+    const { width: diagramWidth, height: diagramHeight } = sized;
+
+    const viewport = document.createElement('div');
+    viewport.className = 'mermaid-viewport';
+    viewport.tabIndex = 0;
+    viewport.setAttribute('role', 'group');
+    viewport.setAttribute('aria-label', 'Diagram: drag to pan, scroll to zoom');
+
+    const canvas = document.createElement('div');
+    canvas.className = 'mermaid-canvas';
+
+    const controls = document.createElement('div');
+    controls.className = 'mermaid-controls';
+    controls.innerHTML = `
+      <button type="button" class="mermaid-control" data-action="zoom-out" aria-label="Zoom out">−</button>
+      <button type="button" class="mermaid-control" data-action="zoom-in" aria-label="Zoom in">+</button>
+      <button type="button" class="mermaid-control" data-action="reset" aria-label="Reset view">↺</button>
+    `;
+
+    canvas.appendChild(svg);
+    viewport.appendChild(canvas);
+    viewport.appendChild(controls);
+    pre.replaceWith(viewport);
+
+    let scale = 1;
+    let tx = MERMAID_PAD;
+    let ty = MERMAID_PAD;
+    let defaultScale = 1;
+    let defaultTx = MERMAID_PAD;
+    let defaultTy = MERMAID_PAD;
+    let minScale = 0.1;
+    let dragging = false;
+    let lastX = 0;
+    let lastY = 0;
+    let pinchDist = 0;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function applyTransform() {
+      canvas.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+      if (reduceMotion) {
+        canvas.style.transition = 'none';
+      }
+    }
+
+    function fitScale(): number {
+      const rect = viewport.getBoundingClientRect();
+      const availW = Math.max(rect.width - MERMAID_PAD * 2, 1);
+      const availH = Math.max(rect.height - MERMAID_PAD * 2, 1);
+      return Math.min(availW / diagramWidth, availH / diagramHeight, 1);
+    }
+
+    function computeDefaultView() {
+      const rect = viewport.getBoundingClientRect();
+      defaultScale = 1;
+      defaultTy = MERMAID_PAD;
+      if (diagramWidth * defaultScale < rect.width) {
+        defaultTx = (rect.width - diagramWidth * defaultScale) / 2;
+      } else {
+        defaultTx = MERMAID_PAD;
+      }
+      minScale = Math.min(fitScale(), 1);
+    }
+
+    function resetView() {
+      computeDefaultView();
+      scale = defaultScale;
+      tx = defaultTx;
+      ty = defaultTy;
+      applyTransform();
+    }
+
+    function zoomAt(clientX: number, clientY: number, nextScale: number) {
+      const clamped = Math.min(MERMAID_MAX_SCALE, Math.max(minScale, nextScale));
+      if (clamped === scale) return;
+
+      const rect = viewport.getBoundingClientRect();
+      const px = clientX - rect.left;
+      const py = clientY - rect.top;
+      const worldX = (px - tx) / scale;
+      const worldY = (py - ty) / scale;
+
+      scale = clamped;
+      tx = px - worldX * scale;
+      ty = py - worldY * scale;
+      applyTransform();
+    }
+
+    function zoomBy(factor: number) {
+      const rect = viewport.getBoundingClientRect();
+      zoomAt(rect.left + rect.width / 2, rect.top + rect.height / 2, scale * factor);
+    }
+
+    resetView();
+
+    viewport.addEventListener('pointerdown', (event) => {
+      if ((event.target as HTMLElement).closest('.mermaid-controls')) return;
+      dragging = true;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      viewport.classList.add('is-dragging');
+      viewport.setPointerCapture(event.pointerId);
+    });
+
+    viewport.addEventListener('pointermove', (event) => {
+      if (!dragging) return;
+      tx += event.clientX - lastX;
+      ty += event.clientY - lastY;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      applyTransform();
+    });
+
+    const endDrag = (event: PointerEvent) => {
+      if (!dragging) return;
+      dragging = false;
+      viewport.classList.remove('is-dragging');
+      if (viewport.hasPointerCapture(event.pointerId)) {
+        viewport.releasePointerCapture(event.pointerId);
+      }
+    };
+
+    viewport.addEventListener('pointerup', endDrag);
+    viewport.addEventListener('pointercancel', endDrag);
+
+    viewport.addEventListener(
+      'wheel',
+      (event) => {
+        event.preventDefault();
+        const factor = event.deltaY < 0 ? MERMAID_ZOOM_STEP : 1 / MERMAID_ZOOM_STEP;
+        zoomAt(event.clientX, event.clientY, scale * factor);
+      },
+      { passive: false },
+    );
+
+    viewport.addEventListener(
+      'touchstart',
+      (event) => {
+        if (event.touches.length === 2) {
+          const [a, b] = [event.touches[0], event.touches[1]];
+          pinchDist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+        }
+      },
+      { passive: true },
+    );
+
+    viewport.addEventListener(
+      'touchmove',
+      (event) => {
+        if (event.touches.length !== 2) return;
+        event.preventDefault();
+        const [a, b] = [event.touches[0], event.touches[1]];
+        const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+        if (pinchDist > 0) {
+          const midX = (a.clientX + b.clientX) / 2;
+          const midY = (a.clientY + b.clientY) / 2;
+          zoomAt(midX, midY, scale * (dist / pinchDist));
+        }
+        pinchDist = dist;
+      },
+      { passive: false },
+    );
+
+    viewport.addEventListener(
+      'touchend',
+      () => {
+        pinchDist = 0;
+      },
+      { passive: true },
+    );
+
+    controls.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-action]');
+      if (!button) return;
+      const action = button.dataset.action;
+      if (action === 'zoom-in') zoomBy(MERMAID_ZOOM_STEP);
+      else if (action === 'zoom-out') zoomBy(1 / MERMAID_ZOOM_STEP);
+      else if (action === 'reset') resetView();
+    });
+
+    viewport.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        tx += MERMAID_PAN_STEP;
+        applyTransform();
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        tx -= MERMAID_PAN_STEP;
+        applyTransform();
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        ty += MERMAID_PAN_STEP;
+        applyTransform();
+      } else if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        ty -= MERMAID_PAN_STEP;
+        applyTransform();
+      } else if (event.key === '+' || event.key === '=') {
+        event.preventDefault();
+        zoomBy(MERMAID_ZOOM_STEP);
+      } else if (event.key === '-' || event.key === '_') {
+        event.preventDefault();
+        zoomBy(1 / MERMAID_ZOOM_STEP);
+      } else if (event.key === '0') {
+        event.preventDefault();
+        resetView();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      computeDefaultView();
+      minScale = Math.min(fitScale(), 1);
+      if (scale < minScale) {
+        scale = minScale;
+        applyTransform();
+      }
+    });
+  }
+
+  async function renderMermaidDiagrams() {
+    const nodes = [
+      ...document.querySelectorAll<HTMLElement>('pre.mermaid:not([data-processed])'),
+    ];
+    if (nodes.length === 0) return;
+
+    try {
+      const { default: mermaid } = await import('mermaid');
+
+      if (!mermaidReady) {
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: 'dark',
+          securityLevel: 'loose',
+          fontFamily: 'Sora, "Segoe UI", system-ui, sans-serif',
+          flowchart: { useMaxWidth: false },
+          sequence: { useMaxWidth: false },
+          themeVariables: {
+            darkMode: true,
+            background: '#0c0e14',
+            primaryColor: '#101218',
+            primaryTextColor: '#e8eaef',
+            primaryBorderColor: 'rgba(255, 255, 255, 0.08)',
+            secondaryColor: '#161922',
+            tertiaryColor: '#07080c',
+            lineColor: '#9aa3b5',
+            textColor: '#e8eaef',
+            mainBkg: '#101218',
+            nodeBorder: 'rgba(255, 255, 255, 0.08)',
+            clusterBkg: '#0c0e14',
+            clusterBorder: 'rgba(61, 214, 245, 0.35)',
+            titleColor: '#e8eaef',
+            edgeLabelBackground: '#101218',
+            actorBkg: '#101218',
+            actorBorder: 'rgba(61, 214, 245, 0.4)',
+            actorTextColor: '#e8eaef',
+            actorLineColor: '#9aa3b5',
+            signalColor: '#e8eaef',
+            signalTextColor: '#e8eaef',
+            labelBoxBkgColor: '#101218',
+            labelBoxBorderColor: 'rgba(255, 255, 255, 0.08)',
+            labelTextColor: '#e8eaef',
+            loopTextColor: '#e8eaef',
+            noteBkgColor: '#161922',
+            noteTextColor: '#e8eaef',
+            noteBorderColor: 'rgba(61, 214, 245, 0.35)',
+            activationBkgColor: 'rgba(61, 214, 245, 0.14)',
+            activationBorderColor: '#3dd6f5',
+            sequenceNumberColor: '#07080c',
+          },
+        });
+        mermaidReady = true;
+      }
+
+      await mermaid.run({ nodes });
+
+      for (const node of nodes) {
+        if (node.isConnected) enhanceMermaidDiagram(node);
+      }
+    } catch (error) {
+      console.error('Mermaid render failed:', error);
+      for (const node of nodes) {
+        node.removeAttribute('data-processed');
+        node.classList.add('mermaid-error');
+      }
+    }
+  }
+
+  document.addEventListener('astro:page-load', renderMermaidDiagrams);
+  renderMermaidDiagrams();
+</script>
+
 <style>
   .article-hero {
     display: flex;

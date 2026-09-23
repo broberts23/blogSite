@@ -621,6 +621,126 @@ a:hover {
   padding: 0;
 }
 
+.prose pre.mermaid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 12rem;
+  padding: 1.25rem;
+  overflow-x: auto;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+}
+
+/* Hide fence source until Mermaid replaces it with SVG. */
+.prose pre.mermaid:not([data-processed]):not(.mermaid-error) {
+  color: transparent;
+}
+
+.prose pre.mermaid.mermaid-error {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.prose pre.mermaid[data-processed] {
+  color: var(--text);
+}
+
+.prose .mermaid-viewport {
+  position: relative;
+  height: min(70vh, 32rem);
+  margin: 0 0 1.35rem;
+  overflow: hidden;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: grab;
+  touch-action: none;
+  outline: none;
+}
+
+.prose .mermaid-viewport:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.prose .mermaid-viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.prose .mermaid-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max-content;
+  height: max-content;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .prose .mermaid-viewport:not(.is-dragging) .mermaid-canvas {
+    transition: transform 80ms linear;
+  }
+}
+
+.prose .mermaid-viewport svg {
+  display: block;
+  max-width: none;
+  height: auto;
+  color: var(--text);
+  user-select: none;
+  pointer-events: none;
+}
+
+.prose .mermaid-controls {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  z-index: 2;
+  display: flex;
+  gap: 0.3rem;
+}
+
+.prose .mermaid-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(16, 18, 24, 0.92);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition:
+    color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+.prose .mermaid-control:hover {
+  color: var(--accent);
+  border-color: rgba(61, 214, 245, 0.4);
+  background: var(--bg-hover);
+}
+
+.prose .mermaid-control:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .prose img {
   margin: 1.25rem 0;
   border: 1px solid var(--border);
