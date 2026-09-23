@@ -7,14 +7,22 @@ interface Props {
   post: BlogPost;
   isLatest?: boolean;
   showTags?: boolean;
+  slideOnHover?: boolean;
   class?: string;
 }
 
-const { post, isLatest = false, showTags = false, class: className = '' } = Astro.props;
+const {
+  post,
+  isLatest = false,
+  showTags = false,
+  slideOnHover = false,
+  class: className = '',
+} = Astro.props;
 const slug = postSlug(post);
 const minutes = estimateReadingTime(post.body ?? '');
 const heroImage = post.data.heroImage;
 const transitionName = `hero-${slug.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
+const enableSlide = slideOnHover && Boolean(heroImage);
 ---
 
 <a
@@ -22,7 +30,7 @@ const transitionName = `hero-${slug.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
     'card',
     'post-card',
     heroImage ? 'has-media' : 'no-media',
-    { 'is-new': isLatest },
+    { 'is-new': isLatest, 'slide-on-hover': enableSlide },
     className,
   ]}
   href={`/${slug}`}
@@ -45,6 +53,7 @@ const transitionName = `hero-${slug.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
           <div class="post-card-scrim" />
         </div>
         <div class="post-card-content">
+          {enableSlide && <div class="post-card-spacer" aria-hidden="true" />}
           <p class="meta post-card-meta">
             <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
             <span class="meta-sep">·</span>
@@ -267,6 +276,61 @@ const transitionName = `hero-${slug.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* Homepage: slide copy to top and show more description */
+    .post-card.slide-on-hover.has-media:hover .post-card-spacer,
+    .post-card.slide-on-hover.has-media:focus-visible .post-card-spacer {
+      flex-grow: 0;
+    }
+
+    .post-card.slide-on-hover.has-media:hover .post-card-summary,
+    .post-card.slide-on-hover.has-media:focus-visible .post-card-summary {
+      -webkit-line-clamp: 6;
+    }
+
+    .post-card.slide-on-hover.has-media:hover .post-card-scrim,
+    .post-card.slide-on-hover.has-media:focus-visible .post-card-scrim {
+      background: linear-gradient(
+        180deg,
+        rgba(7, 8, 12, 0.92) 0%,
+        rgba(7, 8, 12, 0.88) 28%,
+        rgba(7, 8, 12, 0.55) 55%,
+        rgba(7, 8, 12, 0.2) 78%,
+        rgba(7, 8, 12, 0.05) 100%
+      );
+    }
+  }
+
+  /* Homepage slide-on-hover layout: spacer pushes copy down, collapses on hover */
+  .post-card.slide-on-hover.has-media .post-card-content {
+    position: absolute;
+    inset: 0;
+    justify-content: flex-start;
+  }
+
+  .post-card.slide-on-hover .post-card-spacer {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-height: 0;
+    transition: flex-grow 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .post-card.slide-on-hover.has-media .post-card-summary-wrap {
+    transition: grid-template-rows 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .post-card.slide-on-hover.has-media .post-card-summary-inner {
+    transition:
+      opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.08s,
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+  }
+
+  .post-card.slide-on-hover.has-media .post-card-scrim {
+    transition: background 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .post-card.slide-on-hover.is-new .post-card-content {
+    padding-right: 4.25rem;
   }
 
   /* Touch screens, no-hover devices, and reduced motion: summary always accessible */
