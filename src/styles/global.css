@@ -621,6 +621,43 @@ a:hover {
   padding: 0;
 }
 
+.prose pre.mermaid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 12rem;
+  padding: 1.25rem;
+  overflow-x: auto;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+}
+
+/* Hide fence source until Mermaid replaces it with SVG. */
+.prose pre.mermaid:not([data-processed]):not(.mermaid-error) {
+  color: transparent;
+}
+
+.prose pre.mermaid.mermaid-error {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.prose pre.mermaid[data-processed] {
+  color: var(--text);
+}
+
+.prose pre.mermaid svg {
+  max-width: 100%;
+  height: auto;
+  color: var(--text);
+}
+
 .prose img {
   margin: 1.25rem 0;
   border: 1px solid var(--border);

@@ -96,6 +96,75 @@ const transitionName = `hero-${slug.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
   </article>
 </BaseLayout>
 
+<script>
+  let mermaidReady = false;
+
+  async function renderMermaidDiagrams() {
+    const nodes = [
+      ...document.querySelectorAll<HTMLElement>('pre.mermaid:not([data-processed])'),
+    ];
+    if (nodes.length === 0) return;
+
+    try {
+      const { default: mermaid } = await import('mermaid');
+
+      if (!mermaidReady) {
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: 'dark',
+          securityLevel: 'loose',
+          fontFamily: 'Sora, "Segoe UI", system-ui, sans-serif',
+          themeVariables: {
+            darkMode: true,
+            background: '#0c0e14',
+            primaryColor: '#101218',
+            primaryTextColor: '#e8eaef',
+            primaryBorderColor: 'rgba(255, 255, 255, 0.08)',
+            secondaryColor: '#161922',
+            tertiaryColor: '#07080c',
+            lineColor: '#9aa3b5',
+            textColor: '#e8eaef',
+            mainBkg: '#101218',
+            nodeBorder: 'rgba(255, 255, 255, 0.08)',
+            clusterBkg: '#0c0e14',
+            clusterBorder: 'rgba(61, 214, 245, 0.35)',
+            titleColor: '#e8eaef',
+            edgeLabelBackground: '#101218',
+            actorBkg: '#101218',
+            actorBorder: 'rgba(61, 214, 245, 0.4)',
+            actorTextColor: '#e8eaef',
+            actorLineColor: '#9aa3b5',
+            signalColor: '#e8eaef',
+            signalTextColor: '#e8eaef',
+            labelBoxBkgColor: '#101218',
+            labelBoxBorderColor: 'rgba(255, 255, 255, 0.08)',
+            labelTextColor: '#e8eaef',
+            loopTextColor: '#e8eaef',
+            noteBkgColor: '#161922',
+            noteTextColor: '#e8eaef',
+            noteBorderColor: 'rgba(61, 214, 245, 0.35)',
+            activationBkgColor: 'rgba(61, 214, 245, 0.14)',
+            activationBorderColor: '#3dd6f5',
+            sequenceNumberColor: '#07080c',
+          },
+        });
+        mermaidReady = true;
+      }
+
+      await mermaid.run({ nodes });
+    } catch (error) {
+      console.error('Mermaid render failed:', error);
+      for (const node of nodes) {
+        node.removeAttribute('data-processed');
+        node.classList.add('mermaid-error');
+      }
+    }
+  }
+
+  document.addEventListener('astro:page-load', renderMermaidDiagrams);
+  renderMermaidDiagrams();
+</script>
+
 <style>
   .article-hero {
     display: flex;
