@@ -1,0 +1,416 @@
+---
+---
+
+<div class="home-intro" data-home-intro>
+  <div class="home-intro-stage" data-home-intro-stage aria-hidden="true">
+    <canvas class="home-intro-canvas"></canvas>
+  </div>
+  <div class="home-intro-ui">
+    <p class="home-intro-mark">benroberts.io</p>
+    <p class="home-intro-hint">Scroll</p>
+  </div>
+</div>
+
+<style>
+  .home-intro {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+    background: none;
+  }
+
+  :global(html.home-intro-lock) {
+    overflow: hidden;
+  }
+
+  /*
+    Header has no .reveal, so it already tracks --home-reveal.
+    Hero/sections start at opacity 0 via .reveal and never get
+    .is-visible while scroll is locked — drive them explicitly.
+  */
+  :global(html.home-intro-lock .site-main .reveal) {
+    opacity: var(--home-reveal, 0);
+    transform: translateY(calc((1 - var(--home-reveal, 0)) * 42vh));
+    transition: opacity 90ms linear, transform 90ms linear;
+  }
+
+  :global(html.home-intro-lock .site-header),
+  :global(html.home-intro-lock .site-footer) {
+    opacity: var(--home-reveal, 0);
+    pointer-events: none;
+    transition: opacity 90ms linear;
+  }
+
+  :global(html.home-intro-done .site-header),
+  :global(html.home-intro-done .site-footer) {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .home-intro.is-dismissed {
+    visibility: hidden;
+  }
+
+  /* Viewport-sized parent so TubesCursor size:"parent" centers on the wordmark.
+     Blend the whole stage — blending only the canvas traps the black plate inside this layer. */
+  .home-intro-stage {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    mix-blend-mode: screen;
+  }
+
+  .home-intro-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .home-intro-ui {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    pointer-events: none;
+    opacity: calc(1 - var(--home-reveal, 0));
+    transform: translateY(calc(var(--home-reveal, 0) * -0.75rem));
+    will-change: opacity, transform;
+  }
+
+  .home-intro.is-dismissed .home-intro-ui {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .home-intro-mark {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: clamp(1.75rem, 5vw, 3.25rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: #fff;
+    text-shadow: 0 0 24px rgba(0, 0, 0, 0.55);
+    user-select: none;
+  }
+
+  .home-intro-hint {
+    margin: 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    animation: home-intro-hint 1.8s var(--ease) infinite;
+  }
+
+  @keyframes home-intro-hint {
+    0%,
+    100% {
+      opacity: 0.45;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 0.9;
+      transform: translateY(4px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-intro-hint {
+      animation: none;
+    }
+
+    :global(html.home-intro-lock .site-header),
+    :global(html.home-intro-lock .site-footer),
+    :global(html.home-intro-lock .site-main .reveal) {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  type TubesApp = {
+    three?: {
+      scene?: { background: unknown };
+      resize?: () => void;
+      renderer?: {
+        setClearColor?: (color: number, alpha?: number) => void;
+        setClearAlpha?: (alpha: number) => void;
+      };
+    };
+    tubes?: {
+      setColors?: (colors: string[]) => void;
+      setLightsColors?: (colors: string[]) => void;
+    };
+    dispose?: () => void;
+  };
+
+  const TUBE_COLORS = ['#00f0ff', '#38bdf8', '#00ff6a'];
+  const LIGHT_COLORS = ['#00f0ff', '#38bdf8', '#7ee7fa', '#e040fb'];
+  // ~6 deliberate wheel ticks / a longer swipe to finish
+  const REVEAL_DISTANCE = 1100;
+  const REVEAL_TRAVEL_VH = 42;
+
+  let app: TubesApp | null = null;
+  let canvas: HTMLCanvasElement | null = null;
+  let stage: HTMLElement | null = null;
+  let root: HTMLElement | null = null;
+  let dismissed = false;
+  let started = false;
+  let forwarding = false;
+  let reveal = 0;
+  let touchY = 0;
+
+  const cleanups: Array<() => void> = [];
+
+  function canUseWebGL(): boolean {
+    return window.matchMedia(
+      '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)',
+    ).matches;
+  }
+
+  function isHome(): boolean {
+    return location.pathname === '/' || location.pathname === '';
+  }
+
+  function on(target: EventTarget, type: string, handler: EventListener, opts?: AddEventListenerOptions) {
+    target.addEventListener(type, handler, opts);
+    cleanups.push(() => target.removeEventListener(type, handler, opts));
+  }
+
+  function pageNodes(): HTMLElement[] {
+    return [
+      ...document.querySelectorAll<HTMLElement>('.site-header, .site-footer, .site-main .reveal'),
+    ];
+  }
+
+  function paintReveal() {
+    const y = (1 - reveal) * REVEAL_TRAVEL_VH;
+    for (const el of pageNodes()) {
+      el.style.opacity = String(reveal);
+      el.style.transform = el.classList.contains('reveal') ? `translateY(${y}vh)` : '';
+      el.style.pointerEvents = reveal > 0.85 ? '' : 'none';
+    }
+  }
+
+  function clearRevealStyles() {
+    for (const el of pageNodes()) {
+      el.style.opacity = '';
+      el.style.transform = '';
+      el.style.pointerEvents = '';
+      if (el.classList.contains('reveal')) el.classList.add('is-visible');
+    }
+  }
+
+  function setReveal(next: number) {
+    reveal = Math.min(1, Math.max(0, next));
+    document.documentElement.style.setProperty('--home-reveal', String(reveal));
+    paintReveal();
+    if (reveal >= 1) finishReveal();
+  }
+
+  function advanceReveal(deltaPx: number) {
+    if (dismissed || deltaPx <= 0) return;
+    setReveal(reveal + deltaPx / REVEAL_DISTANCE);
+  }
+
+  function finishReveal() {
+    if (dismissed || !root) return;
+    dismissed = true;
+    reveal = 1;
+    document.documentElement.style.setProperty('--home-reveal', '1');
+    root.classList.add('is-dismissed');
+    document.documentElement.classList.remove('home-intro-lock');
+    document.documentElement.classList.add('home-intro-done');
+    clearRevealStyles();
+    forwarding = true;
+  }
+
+  function forwardPointer(e: PointerEvent) {
+    if (!canvas || !forwarding) return;
+    if (!e.isTrusted) return;
+    if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+    canvas.dispatchEvent(
+      new PointerEvent('pointermove', {
+        bubbles: true,
+        cancelable: true,
+        clientX: e.clientX,
+        clientY: e.clientY,
+        pointerId: e.pointerId,
+        pointerType: e.pointerType,
+      }),
+    );
+  }
+
+  function teardown() {
+    // Gate handlers before removing listeners so in-flight events cannot mutate state
+    dismissed = true;
+    forwarding = false;
+
+    for (const fn of cleanups.splice(0)) fn();
+
+    reveal = 0;
+    touchY = 0;
+    clearRevealStyles();
+    document.documentElement.classList.remove('home-intro-lock', 'home-intro-done');
+    document.documentElement.style.removeProperty('--home-reveal');
+
+    try {
+      app?.dispose?.();
+    } catch {
+      /* ignore */
+    }
+    stage?.remove();
+    app = null;
+    canvas = null;
+    stage = null;
+    root = null;
+    started = false;
+    dismissed = false;
+  }
+
+  async function bootTubes(el: HTMLCanvasElement) {
+    const { default: TubesCursor } = await import(
+      'threejs-components/build/cursors/tubes1.min.js'
+    );
+
+    app = TubesCursor(el, {
+      // Keep bloom for the glow; canvas uses mix-blend-mode: screen over GeometricField
+      bloom: {
+        threshold: 0,
+        strength: 1.5,
+        radius: 0.5,
+      },
+      sleepRadiusX: 280,
+      sleepRadiusY: 140,
+      sleepTimeScale1: 1,
+      sleepTimeScale2: 2,
+      tubes: {
+        colors: TUBE_COLORS,
+        lights: {
+          intensity: 180,
+          colors: LIGHT_COLORS,
+        },
+      },
+    }) as TubesApp;
+
+    const renderer = app.three?.renderer;
+    renderer?.setClearColor?.(0x000000, 0);
+    renderer?.setClearAlpha?.(0);
+    if (app.three?.scene) app.three.scene.background = null;
+    // Re-measure after the stage is in its final viewport-sized parent
+    app.three?.resize?.();
+  }
+
+  async function boot() {
+    if (!isHome()) {
+      teardown();
+      return;
+    }
+    if (started) return;
+
+    root = document.querySelector<HTMLElement>('[data-home-intro]');
+    if (!root) return;
+    started = true;
+    dismissed = false;
+    forwarding = false;
+    reveal = 0;
+
+    document.documentElement.classList.add('home-intro-lock');
+    document.documentElement.classList.remove('home-intro-done');
+    document.documentElement.style.setProperty('--home-reveal', '0');
+    paintReveal();
+
+    stage = root.querySelector<HTMLElement>('[data-home-intro-stage]');
+    canvas = stage?.querySelector<HTMLCanvasElement>('.home-intro-canvas') ?? null;
+    // Viewport-sized stage behind .site-shell so size:"parent" centers on the wordmark
+    const geo = document.querySelector('.geo-field');
+    if (stage && geo?.parentElement) {
+      geo.parentElement.insertBefore(stage, geo.nextSibling);
+    }
+
+    const useWebGL = canUseWebGL() && canvas;
+
+    if (useWebGL && canvas) {
+      try {
+        await bootTubes(canvas);
+      } catch (err) {
+        console.error('TubesCursor failed to start:', err);
+        stage?.remove();
+        stage = null;
+        canvas = null;
+      }
+    } else if (stage) {
+      stage.remove();
+      stage = null;
+      canvas = null;
+    }
+
+    const onWheel = (e: WheelEvent) => {
+      if (dismissed) return;
+      e.preventDefault();
+      advanceReveal(Math.abs(e.deltaY));
+    };
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (dismissed || !e.touches[0]) return;
+      touchY = e.touches[0].clientY;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (dismissed || !e.touches[0]) return;
+      e.preventDefault();
+      const y = e.touches[0].clientY;
+      const dy = touchY - y;
+      touchY = y;
+      // Match wheel: either swipe direction advances (downward gives negative dy)
+      advanceReveal(Math.abs(dy));
+    };
+
+    const onKey = (e: KeyboardEvent) => {
+      if (dismissed) return;
+      if (e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault();
+        advanceReveal(180);
+      } else if (e.key === 'PageDown') {
+        e.preventDefault();
+        advanceReveal(360);
+      }
+    };
+
+    on(window, 'pointermove', forwardPointer as EventListener, { passive: true });
+    on(window, 'wheel', onWheel as EventListener, { passive: false });
+    on(window, 'touchstart', onTouchStart as EventListener, { passive: true });
+    on(window, 'touchmove', onTouchMove as EventListener, { passive: false });
+    on(window, 'keydown', onKey as EventListener);
+  }
+
+  // Keep a single pair of Astro lifecycle listeners for the session, but always
+  // invoke the latest boot/teardown (this script can re-execute on return visits).
+  declare global {
+    interface Window {
+      __homeIntroNavWired?: boolean;
+      __homeIntroApi?: { boot: () => Promise<void>; teardown: () => void };
+    }
+  }
+
+  window.__homeIntroApi = { boot, teardown };
+
+  if (!window.__homeIntroNavWired) {
+    window.__homeIntroNavWired = true;
+    document.addEventListener('astro:page-load', () => {
+      void window.__homeIntroApi?.boot();
+    });
+    document.addEventListener('astro:before-swap', () => {
+      window.__homeIntroApi?.teardown();
+    });
+  }
+
+  void boot();
+</script>
