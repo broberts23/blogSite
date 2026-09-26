@@ -416,17 +416,19 @@ const transitionName = `hero-${slug.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
         mermaidReady = true;
       }
 
-      await mermaid.run({ nodes });
-
+      // Render each diagram independently so one parse failure cannot reject the
+      // batch, strip data-processed from siblings, and poison a later re-render.
       for (const node of nodes) {
-        if (node.isConnected) enhanceMermaidDiagram(node);
+        try {
+          await mermaid.run({ nodes: [node] });
+          if (node.isConnected) enhanceMermaidDiagram(node);
+        } catch (error) {
+          console.error('Mermaid render failed:', error);
+          node.classList.add('mermaid-error');
+        }
       }
     } catch (error) {
-      console.error('Mermaid render failed:', error);
-      for (const node of nodes) {
-        node.removeAttribute('data-processed');
-        node.classList.add('mermaid-error');
-      }
+      console.error('Mermaid init failed:', error);
     }
   }
 

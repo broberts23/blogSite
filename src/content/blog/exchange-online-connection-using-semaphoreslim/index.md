@@ -13,7 +13,7 @@ Running this on PowerShell 7.6 brings modern runtime capabilities to serverless 
 
 ```mermaid
 flowchart TB
-  subgraph workerInstance [Function App Process (EP1 Worker)]
+  subgraph workerInstance["Function App Process (EP1 Worker)"]
     direction TB
     profileInit["profile.ps1 (Cold Start)"] --> acquireGate["Acquire Process Gate"]
     acquireGate --> initConn["Initialize-ExchangeOnlineConnection"]
