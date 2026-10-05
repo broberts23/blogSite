@@ -329,5 +329,21 @@ While this lab implementation focuses on a simulated foundation, it demonstrates
 
 ## Run it yourself
 
-Running the project locally does not require an active Azure subscription. Cosmos DB and Service Bus can run locally inside Docker emulators, while the API and background workers execute directly on your workstation. If you prefer to test without configuring a live Slack bot token, the notification worker gracefully falls back to logging the formatted Block Kit JSON to the terminal. Step-by-step guidance for setting up the environment, including exercises for testing failure scenarios and retries, is available in the [README](../README.md).
+Running the project locally does not require an active Azure subscription. Cosmos DB and Service Bus can run locally inside Docker emulators, while the API and background workers execute directly on your workstation. If you prefer to test without configuring a live Slack bot token, the notification worker gracefully falls back to logging the formatted Block Kit JSON to the terminal. Step-by-step guidance for setting up the environment, including exercises for testing failure scenarios and retries, is available in the [README](https://github.com/broberts23/vsCode/blob/main/project-access-reviews-autopilot/README.md).
+
+## References
+
+For the product surface, Graph permissions, messaging backbone, and Slack callback path behind this lab, start here:
+
+[What are access reviews?](https://learn.microsoft.com/entra/id-governance/access-reviews-overview): Microsoft Entra overview of access review scenarios, reviewers, and the governance lifecycle this pipeline sits beside.
+
+[Update accessReviewInstanceDecisionItem](https://learn.microsoft.com/graph/api/accessreviewinstancedecisionitem-update): Graph `PATCH` contract for recording Approve or Deny, including the delegated-only permission model that blocks application identities from deciding on a reviewer's behalf.
+
+[Overview of Service Bus dead-letter queues](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-dead-letter-queues): How topic subscriptions isolate undeliverable or repeatedly failing messages, which is the path the poison fixture is designed to exercise.
+
+[Set scaling rules in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/scale-app): KEDA-backed scale rules for Service Bus workloads, including managed identity authentication so workers can scale from zero without connection strings.
+
+[Verifying requests from Slack](https://docs.slack.dev/authentication/verifying-requests-from-slack): Official guidance for validating `X-Slack-Signature` with the app signing secret before trusting an interactive callback.
+
+[Creating interactive messages](https://docs.slack.dev/messaging/creating-interactive-messages): Block Kit patterns for Approve and Deny buttons, including how `value` and `action_id` travel back in the interaction payload.
 
