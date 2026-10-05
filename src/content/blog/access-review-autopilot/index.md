@@ -1,6 +1,6 @@
 ---
 title: "Stop mailing MyAccess into the void: Entra Access Reviews that settle in Slack"
-description: "Bring the question directly to where people already spend their working day. A Review Event becomes a message on a queue, a worker picks it up, and a concise Slack card appears with the Principal, the Resource, the due date, and a pair of Approve and Deny buttons. A single click returns through a signed callback, recorded cleanly against a Correlation ID. MyAccess remains the underlying Control Plane, while Slack serves as the active Inbox where review work gets settled."
+description: "Bring Entra Access Reviews to Slack: a review event hits a queue, a worker posts Approve and Deny, and one signed click settles the decision against a Correlation ID while MyAccess stays the control plane."
 pubDate: 2026-10-05
 tags: [python, entra, accessreviews, identity, slack, security]
 heroImage: "./cover.png"
