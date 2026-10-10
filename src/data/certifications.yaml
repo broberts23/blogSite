@@ -46,6 +46,24 @@
   status: active
   credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/24BDAC87AEBC67BA?sharingId=CE9E019B345FC5AB"
 
+- name: "Microsoft Certified: Identity and Access Administrator Associate"
+  code: SC-300
+  badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-associate-badge.svg?branch=main"
+  issuer: Microsoft
+  earned: "2021-10-17"
+  expires: "2027-10-17"
+  status: active
+  credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/396F67A247034DFB?sharingId=CE9E019B345FC5AB"
+
+- name: "Microsoft Certified: DevOps Engineer Expert"
+  code: AZ-400
+  badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-expert-badge.svg?branch=main"
+  issuer: Microsoft
+  earned: "2022-10-31"
+  expires: "2027-10-31"
+  status: active
+  credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/49F378B42DD11FE5?sharingId=CE9E019B345FC5AB"
+
 - name: "Microsoft Certified: Azure Security Engineer Associate"
   code: AZ-500
   badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-associate-badge.svg?branch=main"
@@ -90,15 +108,6 @@
   expires: null
   status: active
   credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/AA92DFB34E9FF73?sharingId=CE9E019B345FC5AB"
-
-- name: "Microsoft Certified: Cybersecurity Architect Expert"
-  code: AZ-400
-  badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-expert-badge.svg?branch=main"
-  issuer: Microsoft
-  earned: "2022-10-31"
-  expires: "2026-10-31"
-  status: active
-  credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/49F378B42DD11FE5?sharingId=CE9E019B345FC5AB"
 
 - name: "Microsoft Certified: Azure Solutions Architect Expert"
   code: AZ-350
