@@ -38,6 +38,19 @@ export function isExpertCertification(cert: Certification): boolean {
   return Boolean(cert.badgeUrl?.includes('microsoft-certified-expert-badge'));
 }
 
+function earnedTime(cert: Certification): number {
+  return new Date(cert.earned).valueOf();
+}
+
+export function compareByEarnedDesc(a: Certification, b: Certification): number {
+  return earnedTime(b) - earnedTime(a) || a.name.localeCompare(b.name);
+}
+
+export function compareForDisplay(a: Certification, b: Certification): number {
+  if (a.status !== b.status) return a.status === 'active' ? -1 : 1;
+  return compareByEarnedDesc(a, b);
+}
+
 export function loadCertifications(): Certification[] {
   const file = path.join(process.cwd(), 'src/data/certifications.yaml');
   const raw = fs.readFileSync(file, 'utf8');
