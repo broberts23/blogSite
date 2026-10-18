@@ -9,7 +9,7 @@ draft: false
 
 Cold starts are brutal when the workload involves `Connect-ExchangeOnline`. In a PowerShell Azure Function App, authenticating with a managed identity is clean and secretless, but the handshake is notoriously heavy and the Exchange Online Management module has never been modest about memory consumption. If every incoming HTTP request attempts to negotiate its own remote session from scratch, you pay a steep latency penalty every single time. Worse, under modest concurrency, multiple runspaces race to stand up redundant sessions, triggering throttling, memory exhaustion, and erratic gateway timeouts. The architecture here solves this by establishing the connection once when the worker runspace initializes, keeping it warm, and inserting an in-memory gate that serializes any subsequent reconnect or health validation.
 
-Running this on PowerShell 7.6 brings modern runtime capabilities to serverless automation. Because Azure Functions supports PowerShell 7.6 as a preview worker on .NET 10, and version 3.10 of `ExchangeOnlineManagement` specifically targets that .NET 10 baseline, the hosting platform must be Windows Elastic Premium. Consumption plans might look tempting on paper, but Consumption aggressively tears down idle instances, dumping your warm Exchange sessions into the void the second traffic dips. Elastic Premium with a minimum warm instance count guarantees the worker stays alive, turning what would otherwise be a thirty-second handshake into an instant sub-second cmdlet execution.
+PowerShell 7.6 brings these new runtime capabilities to serverless automation. Azure Functions support for PowerShell 7.6, now in general availability, allows workers to run on .NET 10, and version 3.10 of `ExchangeOnlineManagement` specifically targets that .NET 10 baseline. To get the best performance, the hosting platform must be Windows Elastic Premium or Consumption with a minimum warm instance count. A minimum warm instance count guarantees the worker stays alive, turning what would otherwise be a ten-second handshake into an instant sub-second cmdlet execution.
 
 ```mermaid
 flowchart TB
@@ -43,9 +43,9 @@ The profile script remains lean because the intelligence lives entirely inside t
 
 ![Function App configuration showing PowerShell 7.6](./image-01.png)
 
-## Why refresh lives in the module
+## Why refresh lives in the helper module
 
-Relying solely on startup logic is fragile because cloud tokens expire, worker processes occasionally recycle, and idle remote connections silently drop. If the health check is omitted, an HTTP trigger that arrives three hours after instance creation will execute against a dead session and fail with unhandled transport exceptions. Pushing validation into the helper module ensures every execution verifies the transport state before dispatching commands.
+Relying solely on startup logic is fragile because cloud tokens expire, worker processes occasionally recycle, and idle remote connections silently drop. If the health check is omitted, a HTTP trigger that arrives three hours after instance creation will execute against a dead session and fail with unhandled transport exceptions. Pushing validation into the helper module ensures every execution verifies the transport state before dispatching commands.
 
 The validation routine tests the current state using `Get-ConnectionInformation`, checking specifically for an `Active` token status. If the session has degraded or expired, it triggers a reconnect under synchronization. Once the session is confirmed healthy, the lock releases immediately so the actual Exchange read operations run concurrently without bottlenecking other threads.
 
@@ -167,7 +167,7 @@ INFORMATION: Exchange Online connection reused (TokenStatus Active).
 
 ## Bringing it all together
 
-Managing Exchange Online sessions inside a serverless runtime requires balancing stateless hosting with stateful remote administration tools. Attempting to open a managed identity connection on every request leads directly to throttling and memory starvation. By front-loading session instantiation into `profile.ps1`, centralizing health verification inside a dedicated module, and anchoring the concurrency lock to a process-wide `SemaphoreSlim`, you achieve a resilient automation engine that handles bursts of traffic without breaking a sweat.
+Managing Exchange Online sessions inside a serverless runtime requires balancing stateless hosting with stateful remote administration tools. Attempting to open a managed identity connection on every request leads directly to throttling, memory starvation, and parallel runspace race conditions. By front-loading session instantiation into `profile.ps1`, centralizing health verification inside a dedicated module, and anchoring the concurrency lock to a process-wide `SemaphoreSlim`, you achieve a resilient automation engine that handles bursts of traffic without breaking a sweat.
 
 Separating your cloud infrastructure provisioning from directory authorization scripts keeps automation clean and auditable. Infrastructure templates spin up the compute resources and managed identity, dedicated Graph automation applies the required app permissions and directory roles, and standard zip deployment packages the function code. The resulting architecture gives your operations team a rock-solid, secretless foundation for high-throughput Microsoft 365 automation.
 
