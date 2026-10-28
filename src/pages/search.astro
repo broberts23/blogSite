@@ -78,7 +78,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       return;
     }
     try {
-      const pagefind = (await import(/* @vite-ignore */ '/pagefind/pagefind.js' as string)) as PagefindModule;
+      // Variable path so Vite skips static resolve; pagefind only exists after `npm run build`.
+      const pagefindPath = '/pagefind/pagefind.js';
+      const pagefind = (await import(/* @vite-ignore */ pagefindPath)) as PagefindModule;
       await pagefind.options({ excerptLength: 28 });
       const search = await pagefind.search(query);
       const items = await Promise.all(search.results.slice(0, 12).map((r) => r.data()));
