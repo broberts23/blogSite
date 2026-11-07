@@ -1,6 +1,15 @@
 # status: active | inactive
 # credentialUrl: Credly / Microsoft Learn verify link (optional)
 
+- name: "Microsoft 365 Certified: Microsoft 365 and AI Services Administrator Associate"
+  code: AB-650
+  badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-associate-badge.svg?branch=main"
+  issuer: Microsoft
+  earned: "2026-11-04"
+  expires: "2027-11-04"
+  status: active
+  credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/75E06E298AF4ED06?sharingId=CE9E019B345FC5AB"
+
 - name: "Microsoft Certified: Cloud and AI Security Engineer Associate"
   code: SC-500
   badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-associate-badge.svg?branch=main"
@@ -29,7 +38,7 @@
   credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/E191ECF50FCD83B1?sharingId=CE9E019B345FC5AB"
 
 - name: "Microsoft 365 Certified: Endpoint Administrator Associate"
-  code: MS-102
+  code: MD-102
   badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-associate-badge.svg?branch=main"
   issuer: Microsoft
   earned: "2024-09-05"
@@ -141,7 +150,7 @@
   badgeUrl: "https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-expert-badge.svg?branch=main"
   issuer: Microsoft
   earned: "2022-02-23"
-  expires: "2027-02-23"
+  expires: "2028-02-23"
   status: active
   credentialUrl: "https://learn.microsoft.com/api/credentials/share/en-us/BenRoberts-4768/1021AB20519A691E?sharingId=CE9E019B345FC5AB"
 
